@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
-import { DollarSign } from "lucide-react";
+import coinMain from "@/assets/coin-main.png";
 import type { ISkin } from "@/interfaces/skin.interface";
 
 const rarityColors: { [key: string]: string } = {
@@ -15,29 +15,27 @@ const rarityColors: { [key: string]: string } = {
 export const SkinCard = ({ skin }: { skin: ISkin }) => (
   <Card
     className={cn(
-      "overflow-hidden flex flex-col justify-between text-center border-none p-3",
+      "flex flex-col justify-between text-center border-none p-2 h-64 select-auto",
       rarityColors[skin.rarity] || rarityColors.Default
     )}
   >
-    <div className="flex-grow flex items-center justify-center">
+    <div className="h-16 flex items-center justify-center mt-8 p-1">
       <img
         src={skin.image}
-        alt={skin.skinName}
-        className="w-full h-auto max-h-24 object-contain"
+        alt={skin.name}
+        className="w-full h-full object-cover"
       />
     </div>
-
     <div>
-      <h3 className="font-bold text-md line-clamp-2">
+      <h3 className="font-bold text-xs">
         {skin.statTrak ? `StatTrak™ ${skin.weapon}` : skin.weapon}
       </h3>
-      <p className="text-sm text-gray-300 truncate">
-        {skin.skinName} ({skin.wear})
+      <p className="text-sm text-gray-300">
+        {skin.name} ({skin.wear})
       </p>
     </div>
-
     <Button className="w-full bg-white/10 hover:bg-white/20 h-9 rounded-xl">
-      <DollarSign color="white" size={16} />
+      <img src={coinMain} alt="Tilav Coin" className="w-6 h-6" />
       <span className="font-bold text-white tracking-wider">{skin.price}</span>
     </Button>
   </Card>

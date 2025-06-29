@@ -17,7 +17,7 @@ import { LogOut, User, ShoppingBag } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="p-4 flex justify-between items-center border-b">
+    <header className="p-4 flex justify-between items-center border-b fixed left-0 w-full dark:bg-black">
       <h1 className="text-xl font-bold">CS2 Market</h1>
       <Sheet>
         <SheetTrigger asChild>

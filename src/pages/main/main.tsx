@@ -1,14 +1,19 @@
 import { SkinCard } from "@/components/common/skin-card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Remove unused
 import type { ISkin } from "@/interfaces/skin.interface";
+import { Badge } from "@/components/ui/badge";
+import { useUserStore } from "@/stores/auth/user.store";
+import coinMain from "@/assets/coin-main.png";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 
 const ownedSkins: ISkin[] = [
   {
     id: 1,
     weapon: "AK-47",
-    skinName: "Redline",
-    price: "1550",
+    name: "Redline",
+    price: 1550,
     image:
       "https://cdn.csgoskins.gg/public/uih/weapons/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbnMvYmFzZV93ZWFwb25zL3dlYXBvbl9hazQ3LmQwMGQxZGZhMDk2MjFjMjk3Njk2ZTM1M2Y0MTMzMzBjOTRlZDUwOTAucG5n/auto/auto/85/notrim/06be7f9eb59aeebc19509c82a43a82b5.webp",
     rarity: "Classified",
@@ -21,8 +26,8 @@ const soldSkins: ISkin[] = [
   {
     id: 2,
     weapon: "AWP",
-    skinName: "Asiimov",
-    price: "7500",
+    name: "Asiimov",
+    price: 7500,
     image:
       "https://cdn.csgoskins.gg/public/uih/weapons/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbnMvYmFzZV93ZWFwb25zL3dlYXBvbl9hazQ3LmQwMGQxZGZhMDk2MjFjMjk3Njk2ZTM1M2Y0MTMzMzBjOTRlZDUwOTAucG5n/auto/auto/85/notrim/06be7f9eb59aeebc19509c82a43a82b5.webp",
     rarity: "Covert",
@@ -35,8 +40,8 @@ const boughtSkins: ISkin[] = [
   {
     id: 3,
     weapon: "StatTrak™ M4A4",
-    skinName: "Howl",
-    price: "350000",
+    name: "Howl",
+    price: 350000,
     image:
       "https://cdn.csgoskins.gg/public/uih/weapons/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbnMvYmFzZV93ZWFwb25zL3dlYXBvbl9hazQ3LmQwMGQxZGZhMDk2MjFjMjk3Njk2ZTM1M2Y0MTMzMzBjOTRlZDUwOTAucG5n/auto/auto/85/notrim/06be7f9eb59aeebc19509c82a43a82b5.webp",
     rarity: "Contraband",
@@ -46,8 +51,8 @@ const boughtSkins: ISkin[] = [
   {
     id: 4,
     weapon: "Glock-18",
-    skinName: "Fade",
-    price: "1200000000",
+    name: "Fade",
+    price: 1200000000,
     image:
       "https://cdn.csgoskins.gg/public/uih/weapons/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbnMvYmFzZV93ZWFwb25zL3dlYXBvbl9hazQ3LmQwMGQxZGZhMDk2MjFjMjk3Njk2ZTM1M2Y0MTMzMzBjOTRlZDUwOTAucG5n/auto/auto/85/notrim/06be7f9eb59aeebc19509c82a43a82b5.webp",
     rarity: "Mil-Spec",
@@ -57,37 +62,33 @@ const boughtSkins: ISkin[] = [
 ];
 
 export default function MainPage() {
+  const user = useUserStore((state) => state.user);
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Skins Market</h1>
-      <Tabs defaultValue="owned">
-        <TabsList>
-          <TabsTrigger value="owned">skins</TabsTrigger>
-          <TabsTrigger value="sold">sold skins</TabsTrigger>
-          <TabsTrigger value="bought">bought skins</TabsTrigger>
-        </TabsList>
-        <TabsContent value="owned">
-          <div className="grid grid-cols-2 gap-2">
-            {ownedSkins.map((skin) => (
-              <SkinCard key={skin.id} skin={skin} />
-            ))}
+    <div className="pt-12">
+      {/* Coin image center */}
+      <div className="flex flex-col items-center mb-2">
+        <img src={coinMain} alt="Tilav Coin" className="w-24 h-24" />
+        <span className="font-bold text-xl">Tilav coin</span>
+      </div>
+      {/* Balance card */}
+      <div className="flex justify-center mb-6">
+        <Card className="flex flex-col items-center gap-2 p-6 w-full max-w-xs">
+          <span className="text-gray-500 text-sm">Sizning balansingiz</span>
+          <span className="font-bold text-2xl flex items-center gap-2">
+            <img src={coinMain} alt="Tilav Coin" className="w-6 h-6" />
+            {user?.balance ?? 0}
+          </span>
+          <Button className="mt-2 w-full">Hisobni to'ldirish</Button>
+        </Card>
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        {[...ownedSkins, ...soldSkins, ...boughtSkins].map((skin) => (
+          <div key={skin.id} className="relative">
+            <Badge className="absolute left-2 top-2 z-10 text-white font-bold">reklama</Badge>
+            <SkinCard skin={skin} />
           </div>
-        </TabsContent>
-        <TabsContent value="sold">
-          <div className="grid grid-cols-2 gap-2">
-            {soldSkins.map((skin) => (
-              <SkinCard key={skin.id} skin={skin} />
-            ))}
-          </div>
-        </TabsContent>
-        <TabsContent value="bought">
-          <div className="grid grid-cols-2 gap-2">
-            {boughtSkins.map((skin) => (
-              <SkinCard key={skin.id} skin={skin} />
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
+        ))}
+      </div>
     </div>
   );
 }
