@@ -47,7 +47,7 @@ export default function Skins() {
   const [selectedSkin, setSelectedSkin] = useState<ISkin | null>(null);
   const [price, setPrice] = useState(0);
   const [isAdvertisement, setIsAdvertisement] = useState(false);
-  const commission = price * 0.05;
+  const commission = isAdvertisement ? price * 0.07 : price * 0.05;
 
   const handleSellClick = (skin: ISkin) => {
     setSelectedSkin(skin);
@@ -130,9 +130,14 @@ export default function Skins() {
                       Reklama bo'limiga joylashtirish
                     </Label>
                   </div>
-                  <div className="mt-2 text-sm">
+                  {isAdvertisement && (
+                    <p className="text-xs text-muted-foreground mt-1.5 ml-1">
+                      Skin 1 hafta davomida reklama bo'limida turadi. Komissiya 7% bo'ladi.
+                    </p>
+                  )}
+                  <div className="mt-3 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Komissiya (5%):</span>
+                      <span className="text-gray-500">Komissiya ({isAdvertisement ? "7%" : "5%"}):</span>
                       <span className="font-medium">{commission.toLocaleString()} tilav</span>
                     </div>
                     <div className="flex justify-between font-bold mt-1">
