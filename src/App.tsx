@@ -6,6 +6,7 @@ import AuthLayout from "./layouts/auth-layout";
 import MainPage from "./pages/main/main";
 import Profile from "./pages/profile/profile";
 import Skins from "./pages/skins/skins";
+import { Toaster } from "@/components/ui/sonner"
 
 export default function App() {
   const router = createBrowserRouter([
@@ -42,6 +43,7 @@ export default function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <RouterProvider router={router} />
+      <Toaster />
     </ThemeProvider>
   );
 }

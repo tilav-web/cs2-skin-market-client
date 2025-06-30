@@ -13,6 +13,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import coinSub from "@/assets/coin-sub.png";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 // Temporary data, will be replaced with API call
 const ownedSkins: ISkin[] = [
@@ -43,11 +46,13 @@ const ownedSkins: ISkin[] = [
 export default function Skins() {
   const [selectedSkin, setSelectedSkin] = useState<ISkin | null>(null);
   const [price, setPrice] = useState(0);
+  const [isAdvertisement, setIsAdvertisement] = useState(false);
   const commission = price * 0.05;
 
   const handleSellClick = (skin: ISkin) => {
     setSelectedSkin(skin);
     setPrice(skin.price);
+    setIsAdvertisement(false); // Reset checkbox on new selection
   };
 
   const handleClose = () => {
@@ -55,10 +60,14 @@ export default function Skins() {
   };
 
   const handleSell = () => {
+    if (isAdvertisement && price <= 0) {
+      toast.error("Reklama uchun narx 0 dan katta bo'lishi kerak.");
+      return;
+    }
     // TODO: Implement the actual sell logic with an API call
-    console.log(`Selling ${selectedSkin?.name} for ${price}`);
+    console.log(`Selling ${selectedSkin?.name} for ${price}, advertisement: ${isAdvertisement}`);
     handleClose();
-  }
+  };
 
   return (
     <div>
@@ -93,7 +102,7 @@ export default function Skins() {
                 </DrawerDescription>
               </DrawerHeader>
               <div className="p-4 flex-1 overflow-y-auto">
-                <div className="flex justify-center items-center h-32">
+                <div className="flex justify-center items-center h-[80vh]">
                   <img
                     src={selectedSkin.image}
                     alt={selectedSkin.name}
@@ -111,6 +120,16 @@ export default function Skins() {
                     onChange={(e) => setPrice(Number(e.target.value))}
                     className="mt-1"
                   />
+                  <div className="flex items-center space-x-2 mt-4">
+                    <Checkbox
+                      id="advertisement"
+                      checked={isAdvertisement}
+                      onCheckedChange={(checked) => setIsAdvertisement(Boolean(checked))}
+                    />
+                    <Label htmlFor="advertisement" className="text-sm font-medium">
+                      Reklama bo'limiga joylashtirish
+                    </Label>
+                  </div>
                   <div className="mt-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-500">Komissiya (5%):</span>
