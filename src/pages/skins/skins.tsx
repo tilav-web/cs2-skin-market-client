@@ -60,8 +60,8 @@ export default function Skins() {
   };
 
   const handleSell = () => {
-    if (isAdvertisement && price <= 0) {
-      toast.error("Reklama uchun narx 0 dan katta bo'lishi kerak.");
+    if (isAdvertisement && price <= 19999) {
+      toast.error("Reklama uchun narx 19999 dan katta bo'lishi kerak.");
       return;
     }
     // TODO: Implement the actual sell logic with an API call
