@@ -92,7 +92,7 @@ export default function Skins() {
                   {selectedSkin.weapon} | {selectedSkin.name} ({selectedSkin.wear})
                 </DrawerDescription>
               </DrawerHeader>
-              <div className="p-4">
+              <div className="p-4 flex-1 overflow-y-auto">
                 <div className="flex justify-center items-center h-32">
                   <img
                     src={selectedSkin.image}
