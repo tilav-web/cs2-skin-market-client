@@ -44,9 +44,7 @@ export default function App() {
   useEffect(() => {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.expand();
-      alert(
-        window.Telegram.WebApp.viewportStableHeight
-      );
+      window.Telegram.WebApp.viewportHeight = true
     } else {
       console.error("Telegram Web App SDK not loaded");
     }

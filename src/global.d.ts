@@ -65,7 +65,7 @@ interface TelegramWebApp {
   colorScheme: 'light' | 'dark'; // Rang sxemasi
   themeParams: Record<string, string>; // Mavzu sozlamalari (masalan, bg_color, text_color)
   isExpanded: boolean; // Ilova to‘liq ekran rejimidami
-  viewportHeight: number; // Joriy viewport balandligi
+  viewportHeight: boolean; // Joriy viewport balandligi
   viewportStableHeight: number; // Klaviatura ochilganda barqaror balandlik
   isClosingConfirmationEnabled: boolean; // Ilovani yopish tasdiqlash yoqilganmi
   MainButton: MainButton; // Asosiy tugma obyekti
