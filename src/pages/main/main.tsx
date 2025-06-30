@@ -64,7 +64,7 @@ const boughtSkins: ISkin[] = [
 export default function MainPage() {
   const user = useUserStore((state) => state.user);
   return (
-    <div className="pt-12">
+    <div>
       {/* Coin image center */}
       <div className="flex flex-col items-center mb-2">
         <img src={coinMain} alt="Tilav Coin" className="w-26 h-26" />
@@ -79,7 +79,7 @@ export default function MainPage() {
             <img src={coinMain} alt="Tilav Coin" className="w-6 h-6" />
             {user?.balance ?? 0}
           </span>
-          <Button className="mt-2 w-full">Hisobni to'ldirish</Button>
+          <Button className="mt-2 w-full text-white font-bold">Hisobni to'ldirish</Button>
         </Card>
       </div>
       <div className="grid grid-cols-2 gap-2">
