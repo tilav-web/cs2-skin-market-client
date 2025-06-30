@@ -6,6 +6,7 @@ import AuthLayout from "./layouts/auth-layout";
 import MainPage from "./pages/main/main";
 import Profile from "./pages/profile/profile";
 import Skins from "./pages/skins/skins";
+import Referrals from "./pages/referrals/referrals";
 import { Toaster } from "@/components/ui/sonner";
 import { useEffect } from "react";
 
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
         path: "/skins",
         element: <Skins />,
       },
+      {
+        path: "/referrals",
+        element: <Referrals />,
+      }
     ],
   },
   {
