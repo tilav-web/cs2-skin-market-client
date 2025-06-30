@@ -91,7 +91,7 @@ export default function Skins() {
       </div>
 
       <Drawer open={!!selectedSkin} onClose={handleClose}>
-        <DrawerContent>
+        <DrawerContent className="max-h-[50vh] h-full">
           {selectedSkin && (
             <>
               <DrawerHeader className="text-left">
@@ -102,11 +102,11 @@ export default function Skins() {
                 </DrawerDescription>
               </DrawerHeader>
               <div className="p-4 flex-1 overflow-y-auto">
-                <div className="flex justify-center items-center h-[80vh]">
+                <div className="flex justify-center items-center h-32">
                   <img
                     src={selectedSkin.image}
                     alt={selectedSkin.name}
-                    className="max-w-full max-h-full object-contain"
+                    className="max-w-full max-h-full object-cover"
                   />
                 </div>
                 <div className="mt-4">
