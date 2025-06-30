@@ -4,6 +4,7 @@ import { ThemeProvider } from "./components/theme-provider";
 import Auth from "./pages/auth/auth";
 import AuthLayout from "./layouts/auth-layout";
 import MainPage from "./pages/main/main";
+import Profile from "./pages/profile/profile";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -15,6 +16,10 @@ export default function App() {
           index: true,
           element: <MainPage />,
         },
+        {
+          path: '/profile',
+          element: <Profile />
+        }
       ],
     },
     {

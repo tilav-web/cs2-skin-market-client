@@ -1,6 +1,7 @@
 export interface IUser {
   steam_id: string;
   phone: string;
+  photo: string;
   telegram_id: string;
   personaname: string;
   steam_token: string;
