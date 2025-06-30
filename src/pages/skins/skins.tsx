@@ -91,68 +91,70 @@ export default function Skins() {
       </div>
 
       <Drawer open={!!selectedSkin} onClose={handleClose}>
-        <DrawerContent className="max-h-[50vh] h-full">
-          {selectedSkin && (
-            <>
-              <DrawerHeader className="text-left">
-                <DrawerTitle>Skini sotish</DrawerTitle>
-                <DrawerDescription>
-                  {selectedSkin.statTrak ? "StatTrak™ " : ""}
-                  {selectedSkin.weapon} | {selectedSkin.name} ({selectedSkin.wear})
-                </DrawerDescription>
-              </DrawerHeader>
-              <div className="p-4 flex-1 overflow-y-auto">
-                <div className="flex justify-center items-center h-32">
-                  <img
-                    src={selectedSkin.image}
-                    alt={selectedSkin.name}
-                    className="max-w-full max-h-full object-cover"
-                  />
-                </div>
-                <div className="mt-4">
-                  <label htmlFor="price" className="text-sm font-medium">
-                    Narx (tilav)
-                  </label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={price}
-                    onChange={(e) => setPrice(Number(e.target.value))}
-                    className="mt-1"
-                  />
-                  <div className="flex items-center space-x-2 mt-4">
-                    <Checkbox
-                      id="advertisement"
-                      checked={isAdvertisement}
-                      onCheckedChange={(checked) => setIsAdvertisement(Boolean(checked))}
+        <div vaul-drawer-wrapper="">
+          <DrawerContent>
+            {selectedSkin && (
+              <>
+                <DrawerHeader className="text-left">
+                  <DrawerTitle>Skini sotish</DrawerTitle>
+                  <DrawerDescription>
+                    {selectedSkin.statTrak ? "StatTrak™ " : ""}
+                    {selectedSkin.weapon} | {selectedSkin.name} ({selectedSkin.wear})
+                  </DrawerDescription>
+                </DrawerHeader>
+                <div className="p-4 flex-1 overflow-y-auto">
+                  <div className="flex justify-center items-center h-32">
+                    <img
+                      src={selectedSkin.image}
+                      alt={selectedSkin.name}
+                      className="max-w-full max-h-full object-cover"
                     />
-                    <Label htmlFor="advertisement" className="text-sm font-medium">
-                      Reklama bo'limiga joylashtirish
-                    </Label>
                   </div>
-                  <div className="mt-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Komissiya (5%):</span>
-                      <span className="font-medium">{commission.toLocaleString()} tilav</span>
+                  <div className="mt-4">
+                    <label htmlFor="price" className="text-sm font-medium">
+                      Narx (tilav)
+                    </label>
+                    <Input
+                      id="price"
+                      type="number"
+                      value={price}
+                      onChange={(e) => setPrice(Number(e.target.value))}
+                      className="mt-1"
+                    />
+                    <div className="flex items-center space-x-2 mt-4">
+                      <Checkbox
+                        id="advertisement"
+                        checked={isAdvertisement}
+                        onCheckedChange={(checked) => setIsAdvertisement(Boolean(checked))}
+                      />
+                      <Label htmlFor="advertisement" className="text-sm font-medium">
+                        Reklama bo'limiga joylashtirish
+                      </Label>
                     </div>
-                    <div className="flex justify-between font-bold mt-1">
-                      <span>Siz olasiz:</span>
-                      <span>{(price - commission).toLocaleString()} tilav</span>
+                    <div className="mt-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Komissiya (5%):</span>
+                        <span className="font-medium">{commission.toLocaleString()} tilav</span>
+                      </div>
+                      <div className="flex justify-between font-bold mt-1">
+                        <span>Siz olasiz:</span>
+                        <span>{(price - commission).toLocaleString()} tilav</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <DrawerFooter className="bg-muted/10 border-t p-4">
-                <Button onClick={handleSell} className="text-white font-bold">Sotish</Button>
-                <DrawerClose asChild>
-                  <Button variant="outline" onClick={handleClose}>
-                    Bekor qilish
-                  </Button>
-                </DrawerClose>
-              </DrawerFooter>
-            </>
-          )}
-        </DrawerContent>
+                <DrawerFooter className="bg-muted/10 border-t p-4">
+                  <Button onClick={handleSell} className="text-white font-bold">Sotish</Button>
+                  <DrawerClose asChild>
+                    <Button variant="outline" onClick={handleClose}>
+                      Bekor qilish
+                    </Button>
+                  </DrawerClose>
+                </DrawerFooter>
+              </>
+            )}
+          </DrawerContent>
+        </div>
       </Drawer>
     </div>
   );
