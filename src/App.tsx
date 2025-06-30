@@ -44,8 +44,7 @@ export default function App() {
   useEffect(() => {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.expand();
-      console.log(
-        "WebApp expanded. Stable viewport height:",
+      alert(
         window.Telegram.WebApp.viewportStableHeight
       );
     } else {
