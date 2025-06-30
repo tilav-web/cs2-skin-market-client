@@ -69,7 +69,7 @@ export default function MainPage() {
       <div className="flex flex-col items-center mb-2">
         <img src={coinMain} alt="Tilav Coin" className="w-26 h-26" />
         <p className="font-bold text-xl">Tilav coin</p>
-        <p className="text-center text-sm text-gray-500">Tilav coin yordamida skin-lar sotib oling. 1 so'm = 1 tilav</p>
+        <p className="text-center text-sm text-gray-500">Tilav coin yordamida skin-lar sotib oling.<br/><strong>1 so'm = 1 tilav.</strong></p>
       </div>
       {/* Balance card */}
       <div className="flex justify-center mb-6">

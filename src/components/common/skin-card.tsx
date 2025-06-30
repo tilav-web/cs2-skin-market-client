@@ -12,7 +12,17 @@ const rarityColors: { [key: string]: string } = {
   Default: "bg-indigo-900/70 text-white",
 };
 
-export const SkinCard = ({ skin }: { skin: ISkin }) => (
+interface SkinCardProps {
+  skin: ISkin;
+  variant?: "buy" | "sell";
+  onSellClick?: (skin: ISkin) => void;
+}
+
+export const SkinCard = ({
+  skin,
+  variant = "buy",
+  onSellClick,
+}: SkinCardProps) => (
   <Card
     className={cn(
       "flex flex-col justify-between text-center border-none p-2 h-64 select-auto",
@@ -34,9 +44,20 @@ export const SkinCard = ({ skin }: { skin: ISkin }) => (
         {skin.name} ({skin.wear})
       </p>
     </div>
-    <Button className="w-full bg-white/10 hover:bg-white/20 h-9 rounded-xl">
-      <img src={coinMain} alt="Tilav Coin" className="w-6 h-6" />
-      <span className="font-bold text-white tracking-wider">{skin.price}</span>
-    </Button>
+    {variant === "buy" ? (
+      <Button className="w-full bg-white/10 hover:bg-white/20 h-9 rounded-xl">
+        <img src={coinMain} alt="Tilav Coin" className="w-6 h-6" />
+        <span className="font-bold text-white tracking-wider">
+          {skin.price}
+        </span>
+      </Button>
+    ) : (
+      <Button
+        className="w-full bg-blue-500/70 backdrop-blur hover:bg-blue-500/80 h-9 rounded-xl text-white font-bold"
+        onClick={() => onSellClick?.(skin)}
+      >
+        Sotish
+      </Button>
+    )}
   </Card>
 );

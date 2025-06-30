@@ -16,7 +16,7 @@ export default function Footer() {
           <span className="text-xs mt-1">{user?.balance ?? 0}</span>
         </Link>
         {/* My Skins */}
-        <Link to="/my-skins" className="flex flex-col items-center flex-1 py-2">
+        <Link to="/skins" className="flex flex-col items-center flex-1 py-2">
           <ShoppingBag size={24} />
           <span className="text-xs mt-1">Skins</span>
         </Link>

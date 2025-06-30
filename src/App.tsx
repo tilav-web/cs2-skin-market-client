@@ -5,6 +5,7 @@ import Auth from "./pages/auth/auth";
 import AuthLayout from "./layouts/auth-layout";
 import MainPage from "./pages/main/main";
 import Profile from "./pages/profile/profile";
+import Skins from "./pages/skins/skins";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -19,6 +20,10 @@ export default function App() {
         {
           path: '/profile',
           element: <Profile />
+        },
+        {
+          path: '/skins',
+          element: <Skins />
         }
       ],
     },
