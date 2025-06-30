@@ -45,8 +45,8 @@ export default function App() {
   useEffect(() => {
     // Initialize Telegram Web App
     if (window.Telegram?.WebApp) {
-      window.Telegram?.WebApp.ready();
-      window.Telegram.WebApp.expand();
+      window.Telegram.WebApp.requestFullscreen();
+      window.Telegram.WebApp.lockOrientation();
     }
   }, []);
 
