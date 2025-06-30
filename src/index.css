@@ -112,10 +112,16 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
+  }
+  html,
+  body {
+    height: 100%;
+    overflow-x: hidden;
   }
   body {
     @apply bg-background text-foreground;
+    overflow-y: hidden;
   }
 }
 
