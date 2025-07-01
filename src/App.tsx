@@ -7,7 +7,7 @@ import Profile from "./pages/profile/profile";
 import Skins from "./pages/skins/skins";
 import Referrals from "./pages/referrals/referrals";
 import { Toaster } from "@/components/ui/sonner";
-// import { useEffect } from "react";
+import { useEffect } from "react";
 
 const router = createBrowserRouter([
   {
@@ -39,13 +39,13 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  // useEffect(() => {
-  //   // Initialize Telegram Web App
-  //   if (window.Telegram?.WebApp) {
-  //     window.Telegram.WebApp.requestFullscreen();
-  //     window.Telegram.WebApp.lockOrientation();
-  //   }
-  // }, []);
+  useEffect(() => {
+    // Initialize Telegram Web App
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.requestFullscreen();
+      window.Telegram.WebApp.lockOrientation();
+    }
+  }, []);
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
