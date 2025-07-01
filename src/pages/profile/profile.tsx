@@ -9,10 +9,11 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { User, Phone, Wallet, AlertTriangle, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { User, Phone, Wallet, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import type { ITransaction } from "@/interfaces/transaction.interface";
 import coinMain from "@/assets/coin-main.png";
-import type { ElementType } from "react";
+import { useEffect, type ElementType } from "react";
+import { useNavigate } from "react-router-dom";
 
 const STEAM_PRIVACY_URL = "https://steamcommunity.com/my/edit/settings";
 
@@ -82,7 +83,15 @@ const typeMap: Record<ITransaction["type"], { label: string; icon?: ElementType;
 
 export default function Profile() {
   const user = useUserStore((state) => state.user);
-  const hasSteam = Boolean(user?.personaname);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    (() => {
+      if (!user?.steam_id) {
+        navigate("/auth");
+      }
+    })()
+  }, [navigate, user?.steam_id])
 
   return (
     <div className="w-full max-w-md mx-auto p-2 flex flex-col gap-4">
@@ -127,31 +136,19 @@ export default function Profile() {
             </div>
           </div>
         </CardContent>
-        {hasSteam && (
           <CardFooter className="bg-muted/30 p-4">
-            <div className="flex w-full items-start gap-3 rounded-lg border border-destructive/50 bg-destructive/10 p-3">
-              <AlertTriangle className="mt-1 h-6 w-6 flex-shrink-0 text-destructive" />
-              <div className="flex flex-col gap-1">
-                <h3 className="font-bold text-destructive text-sm">
-                  Steam inventar yopiq
-                </h3>
-                <p className="text-xs text-destructive/80">
-                  Skin savdosi uchun Steam inventar profilingiz ochiq bo'lishi
-                  kerak. Iltimos, sozlamalarni o'zgartiring.
-                </p>
-                <Button asChild variant="destructive" className="mt-2 w-fit px-3 py-1 text-xs">
-                  <a
-                    href={STEAM_PRIVACY_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Sozlamalarga o'tish
-                  </a>
-                </Button>
-              </div>
-            </div>
+            <p className="text-sm text-muted-foreground">
+              Skin savdosi uchun Steam inventar profilingiz ochiq bo'lishi kerak. 
+              <a
+                href={STEAM_PRIVACY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline ml-1"
+              >
+                Sozlamalarga o'tish
+              </a>
+            </p>
           </CardFooter>
-        )}
       </Card>
 
       {/* Transaction History */}
