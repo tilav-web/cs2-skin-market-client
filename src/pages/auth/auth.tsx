@@ -9,6 +9,7 @@ import {
 import { FaSteam } from "react-icons/fa";
 import coinMain from "@/assets/coin-main.png";
 import { Link } from "react-router-dom";
+import { serverUrl } from "@/common/utils/shared";
 
 export default function Auth() {
   return (
@@ -22,7 +23,7 @@ export default function Auth() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Link to={`http://localhost:3000/users/steam/callback?initData=${window.Telegram?.WebApp.initData}`}>
+          <Link to={`${serverUrl}/users/steam/callback?initData=${window.Telegram?.WebApp.initData}`}>
             <Button className="w-full text-lg font-bold cursor-pointer bg-gradient-to-r from-[#171A21] to-[#2A475E] text-white hover:from-[#2A475E] hover:to-[#171A21] py-6 rounded-xl shadow-lg mt-2">
               <FaSteam className="mr-3 h-7 w-7" />
               Steam orqali kirish
