@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Phone, Wallet, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import type { ITransaction } from "@/interfaces/transaction.interface";
 import coinMain from "@/assets/coin-main.png";
@@ -120,6 +120,9 @@ export default function Profile() {
       <Card className="overflow-hidden shadow-lg">
         <CardHeader className="flex flex-row items-center gap-3 bg-muted/30 p-4">
           <Avatar className="h-14 w-14 border-2 border-primary/50">
+            {user?.photo ? (
+              <AvatarImage src={user.photo} alt={user.personaname || "User"} />
+            ) : null}
             <AvatarFallback className="bg-primary/10">
               <User className="h-7 w-7 text-primary" />
             </AvatarFallback>
