@@ -5,5 +5,5 @@ export interface ISkin {
   market_hash_name: string; // Skinning to‘liq nomi (masalan: "AK-47 | Redline (Field-Tested)")
   icon_url: string; // Skin rasmi (SteamCDN dan olinadi)
   tradable: boolean; // Trade qilish mumkinmi
-  wear?: number; // Skin float (agar mavjud bo‘lsa
+  price?: number; // Skinning narxi (foydalanuvchi tomonidan kiritilgan)
 }

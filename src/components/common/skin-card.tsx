@@ -35,16 +35,8 @@ export const SkinCard = ({
         {skin.market_hash_name}
       </p>
       <span className="inline-block rounded-full px-2 py-0.5 text-xs bg-slate-100 text-slate-700 mt-1 border border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700">
-        ID: {skin.assetid}
+        {skin.market_hash_name}
       </span>
-      <span className="inline-block rounded-full px-2 py-0.5 text-xs bg-slate-100 text-slate-700 mt-1 border border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700">
-        Class: {skin.classid} | Inst: {skin.instanceid}
-      </span>
-      {skin.wear !== undefined && (
-        <span className="inline-block rounded-full px-2 py-0.5 text-xs bg-slate-200 text-slate-800 mt-1 border border-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:border-slate-600">
-          Float: {skin.wear}
-        </span>
-      )}
       <span className={cn(
         "inline-block rounded-full px-2 py-0.5 text-xs mt-1 border font-bold",
         skin.tradable

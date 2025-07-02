@@ -116,14 +116,6 @@ export default function Skins() {
                 <DrawerDescription>
                   {selectedSkin.market_hash_name}
                   <br />
-                  <span className="text-xs text-gray-500">ID: {selectedSkin.assetid}</span>
-                  <br />
-                  <span className="text-xs text-gray-500">Class: {selectedSkin.classid} | Inst: {selectedSkin.instanceid}</span>
-                  <br />
-                  {selectedSkin.wear !== undefined && (
-                    <span className="text-xs text-gray-500">Float: {selectedSkin.wear}</span>
-                  )}
-                  <br />
                   <span className={selectedSkin.tradable ? "text-green-600" : "text-red-600"}>
                     {selectedSkin.tradable ? "Tradable" : "Not Tradable"}
                   </span>
