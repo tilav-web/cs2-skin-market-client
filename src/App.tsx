@@ -52,6 +52,7 @@ export default function App() {
   useEffect(() => {
     (async () => {
       const data = await userService.findMe();
+      alert(data.steam_id);
       setUser(data);
     })();
   }, [setUser, user]);
