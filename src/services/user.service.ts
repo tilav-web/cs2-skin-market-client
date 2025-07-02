@@ -11,6 +11,17 @@ class UserService {
       throw error;
     }
   }
+
+  async findMySkins() {
+    try {
+      const res = await privateInstance.get(`${endpoints.USERS}/skins`)
+      return res.data
+    } catch (error) {
+      console.error(error);
+      throw error
+    }
+  }
+
 }
 
 export const userService = new UserService();

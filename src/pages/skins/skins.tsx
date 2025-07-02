@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SkinCard } from "@/components/common/skin-card";
 import type { ISkin } from "@/interfaces/skin.interface";
 import {
@@ -16,6 +16,7 @@ import coinSub from "@/assets/coin-sub.png";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { userService } from "@/services/user.service";
 
 // Temporary data, will be replaced with API call
 const ownedSkins: ISkin[] = [
@@ -68,6 +69,17 @@ export default function Skins() {
     console.log(`Selling ${selectedSkin?.name} for ${price}, advertisement: ${isAdvertisement}`);
     handleClose();
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await userService.findMySkins();
+        console.log(data);
+      } catch (error) {
+        console.error(error);
+      }
+    })()
+  }, [])
 
   return (
     <div>
