@@ -22,7 +22,7 @@ export default function Auth() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <a href={`${serverUrl}/users/steam?initData=${encodeURIComponent(window.Telegram?.WebApp.initData ?? '')}`}>
+          <a target="_blanck" href={`${serverUrl}/users/steam?initData=${encodeURIComponent(window.Telegram?.WebApp.initData ?? '')}`}>
             <Button className="w-full text-lg font-bold cursor-pointer bg-gradient-to-r from-[#171A21] to-[#2A475E] text-white hover:from-[#2A475E] hover:to-[#171A21] py-6 rounded-xl shadow-lg mt-2">
               <FaSteam className="mr-3 h-7 w-7" />
               Steam orqali kirish

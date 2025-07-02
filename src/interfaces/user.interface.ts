@@ -4,8 +4,7 @@ export interface IUser {
   photo?: string;
   telegram_id: string;
   personaname?: string;
-  steam_token?: string;
-  token_expires_at?: Date;
+  trade_url?: string;
   action?: string;
   status: 'active' | 'not_active' | 'block';
   balance: number;

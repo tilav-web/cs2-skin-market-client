@@ -51,6 +51,7 @@ requestInstance({
   instance: privateInstance,
   headers: {
     "Content-Type": "application/json",
+    Authorization: window.Telegram?.WebApp.initData
   } as AxiosRequestHeaders,
 });
 
@@ -59,6 +60,7 @@ requestInstance({
   instance: privateInstanceFile,
   headers: {
     "Content-Type": "multipart/form-data",
+    Authorization: window.Telegram?.WebApp.initData
   } as AxiosRequestHeaders,
 });
 

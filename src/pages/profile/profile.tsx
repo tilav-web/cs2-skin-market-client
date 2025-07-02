@@ -12,8 +12,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { User, Phone, Wallet, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import type { ITransaction } from "@/interfaces/transaction.interface";
 import coinMain from "@/assets/coin-main.png";
-import { useEffect, type ElementType } from "react";
+import { useEffect, useState, type ElementType } from "react";
 import { useNavigate } from "react-router-dom";
+import { Textarea } from "@/components/ui/textarea";
 
 const STEAM_PRIVACY_URL = "https://steamcommunity.com/my/edit/settings";
 
@@ -85,6 +86,11 @@ export default function Profile() {
   const user = useUserStore((state) => state.user);
   const navigate = useNavigate();
 
+  // Trade URL uchun state
+  const [tradeUrl, setTradeUrl] = useState(user?.trade_url || "");
+  const [isEditingTradeUrl, setIsEditingTradeUrl] = useState(false);
+  const [isTradeUrlChanged, setIsTradeUrlChanged] = useState(false);
+
   useEffect(() => {
     (() => {
       if (!user?.steam_id) {
@@ -92,6 +98,22 @@ export default function Profile() {
       }
     })()
   }, [navigate, user?.steam_id])
+
+  // user o'zgarganda tradeUrl ni yangilash
+  useEffect(() => {
+    setTradeUrl(user?.trade_url || "");
+    setIsTradeUrlChanged(false);
+    setIsEditingTradeUrl(false);
+  }, [user?.trade_url]);
+
+  // Trade URL ni saqlash funksiyasi (hozircha faqat frontda)
+  const handleSaveTradeUrl = () => {
+    // TODO: API chaqiruv qilish mumkin
+    // Masalan: updateUser({ trade_url: tradeUrl })
+    setIsEditingTradeUrl(false);
+    setIsTradeUrlChanged(false);
+    // Toast yoki xabar chiqarish mumkin
+  };
 
   return (
     <div className="w-full max-w-md mx-auto p-2 flex flex-col gap-4">
@@ -134,6 +156,29 @@ export default function Profile() {
                 <ArrowUpCircle className="h-5 w-5 text-yellow-600" />
               </Button>
             </div>
+          </div>
+          {/* Trade URL textarea */}
+          <div className="flex flex-col gap-2 rounded-lg border p-3">
+            <label htmlFor="trade-url" className="text-xs text-muted-foreground font-medium mb-1">
+              Steam Trade URL
+            </label>
+            <Textarea
+              id="trade-url"
+              className="resize-none min-h-[40px] text-sm focus:outline-primary"
+              value={tradeUrl}
+              placeholder="Trade URL kiriting"
+              onFocus={() => setIsEditingTradeUrl(true)}
+              onChange={e => {
+                setTradeUrl(e.target.value);
+                setIsTradeUrlChanged(e.target.value !== (user?.trade_url || ""));
+              }}
+              disabled={!user?.steam_id}
+            />
+            {isEditingTradeUrl && isTradeUrlChanged && (
+              <Button size="sm" className="self-end mt-1 text-white" onClick={handleSaveTradeUrl}>
+                Saqlash
+              </Button>
+            )}
           </div>
         </CardContent>
           <CardFooter className="bg-muted/30 p-4">
