@@ -33,15 +33,15 @@ const router = createBrowserRouter([
         element: <Referrals />,
       },
       {
-        path: '/auth',
+        path: "/auth",
         element: <Auth />,
-      }
+      },
     ],
-  }
+  },
 ]);
 
 export default function App() {
-  const { setUser, user } = useUserStore()
+  const { setUser, user } = useUserStore();
   useEffect(() => {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.requestFullscreen();
@@ -51,12 +51,10 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      if(!user) {
-        const data = await userService.findMe()
-        setUser(data)
-      }
-    })()
-  }, [setUser, user])
+      const data = await userService.findMe();
+      setUser(data);
+    })();
+  }, [setUser, user]);
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
