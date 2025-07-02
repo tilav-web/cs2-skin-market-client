@@ -29,7 +29,7 @@ export default function Skins() {
 
   const handleSellClick = (skin: ISkin) => {
     setSelectedSkin(skin);
-    setPrice(skin.price);
+    setPrice(0); // Yangi interfeysda narx yo'q, default 0
     setIsAdvertisement(false); // Reset checkbox on new selection
   };
 
@@ -43,7 +43,7 @@ export default function Skins() {
       return;
     }
     // TODO: Implement the actual sell logic with an API call
-    console.log(`Selling ${selectedSkin?.name} for ${price}, advertisement: ${isAdvertisement}`);
+    console.log(`Selling ${selectedSkin?.market_hash_name} for ${price}, advertisement: ${isAdvertisement}`);
     handleClose();
   };
 
@@ -98,7 +98,7 @@ export default function Skins() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {skins.map((skin) => (
             <SkinCard
-              key={skin.id}
+              key={skin.assetid}
               skin={skin}
               variant="sell"
               onSellClick={handleSellClick}
@@ -114,15 +114,26 @@ export default function Skins() {
               <DrawerHeader className="text-left">
                 <DrawerTitle>Skini sotish</DrawerTitle>
                 <DrawerDescription>
-                  {selectedSkin.statTrak ? "StatTrak™ " : ""}
-                  {selectedSkin.weapon} | {selectedSkin.name} ({selectedSkin.wear})
+                  {selectedSkin.market_hash_name}
+                  <br />
+                  <span className="text-xs text-gray-500">ID: {selectedSkin.assetid}</span>
+                  <br />
+                  <span className="text-xs text-gray-500">Class: {selectedSkin.classid} | Inst: {selectedSkin.instanceid}</span>
+                  <br />
+                  {selectedSkin.wear !== undefined && (
+                    <span className="text-xs text-gray-500">Float: {selectedSkin.wear}</span>
+                  )}
+                  <br />
+                  <span className={selectedSkin.tradable ? "text-green-600" : "text-red-600"}>
+                    {selectedSkin.tradable ? "Tradable" : "Not Tradable"}
+                  </span>
                 </DrawerDescription>
               </DrawerHeader>
               <div className="p-4 flex-1 overflow-y-auto">
                 <div className="flex justify-center items-center h-32">
                   <img
-                    src={selectedSkin.image}
-                    alt={selectedSkin.name}
+                    src={selectedSkin.icon_url}
+                    alt={selectedSkin.market_hash_name}
                     className="max-w-full max-h-full object-cover"
                   />
                 </div>
