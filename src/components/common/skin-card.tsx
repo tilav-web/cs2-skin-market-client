@@ -4,12 +4,12 @@ import { Button } from "../ui/button";
 import coinMain from "@/assets/coin-main.png";
 import type { ISkin } from "@/interfaces/skin.interface";
 
-const rarityColors: { [key: string]: string } = {
-  "Mil-Spec": "bg-blue-900/70 text-white",
-  Classified: "bg-pink-900/70 text-white",
-  Covert: "bg-red-900/70 text-white",
-  Contraband: "bg-yellow-800/70 text-white",
-  Default: "bg-indigo-900/70 text-white",
+const rarityBadge: { [key: string]: string } = {
+  "Mil-Spec": "bg-blue-100 text-blue-700 border-blue-300",
+  Classified: "bg-pink-100 text-pink-700 border-pink-300",
+  Covert: "bg-red-100 text-red-700 border-red-300",
+  Contraband: "bg-yellow-100 text-yellow-800 border-yellow-300",
+  Default: "bg-slate-200 text-slate-700 border-slate-300",
 };
 
 interface SkinCardProps {
@@ -25,39 +25,59 @@ export const SkinCard = ({
 }: SkinCardProps) => (
   <Card
     className={cn(
-      "flex flex-col justify-between text-center border-none p-2 h-64 select-auto transition-transform hover:scale-105 hover:shadow-lg",
-      rarityColors[skin.rarity] || rarityColors.Default
+      "relative flex flex-col justify-between text-center rounded-xl shadow-lg border border-slate-200 bg-gradient-to-b from-white/80 to-slate-200/60 p-3 h-72 min-h-0 select-auto transition-transform hover:scale-105 hover:shadow-2xl overflow-hidden"
     )}
   >
-    <div className="h-24 flex items-center justify-center mt-2 p-0.5">
+    {/* Rarity badge */}
+    <div className="absolute right-3 top-3 z-10">
+      <span
+        className={cn(
+          "px-2 py-0.5 rounded-full text-xs font-bold border",
+          rarityBadge[skin.rarity] || rarityBadge.Default
+        )}
+      >
+        {skin.rarity}
+      </span>
+    </div>
+    {/* Image */}
+    <div className="bg-white rounded-lg flex items-center justify-center h-24 mb-2 shadow-sm">
       <img
         src={skin.image}
         alt={skin.name}
-        className="w-full h-full object-contain"
+        className="max-h-20 max-w-full object-contain drop-shadow"
+        draggable={false}
       />
     </div>
-    <div>
-      <h3 className="font-bold text-xs">
-        {skin.statTrak ? `StatTrak™ ${skin.weapon}` : skin.weapon}
-      </h3>
-      <p className="text-sm text-gray-300">
-        {skin.name} ({skin.wear})
-      </p>
+    {/* Name & Weapon */}
+    <div className="flex flex-col flex-grow min-h-0 justify-center">
+      <div className="flex items-center justify-center gap-1 mb-1 min-w-0">
+        {skin.statTrak && (
+          <span className="bg-orange-400/90 text-white text-xs font-bold rounded px-2 py-0.5">
+            StatTrak™
+          </span>
+        )}
+        <span className="font-semibold text-sm truncate max-w-[90px]">{skin.weapon}</span>
+      </div>
+      <p className="text-xs text-gray-700 truncate max-w-full break-words">{skin.name}</p>
+      <span className="inline-block rounded-full px-2 py-0.5 text-xs bg-slate-100 text-slate-700 mt-1 border border-slate-300">
+        {skin.wear}
+      </span>
     </div>
-    {variant === "buy" ? (
-      <Button className="w-full bg-white/10 hover:bg-white/20 h-9 rounded-xl">
-        <img src={coinMain} alt="Tilav Coin" className="w-6 h-6" />
-        <span className="font-bold text-white tracking-wider">
-          {skin.price}
-        </span>
-      </Button>
-    ) : (
-      <Button
-        className="w-full bg-blue-500/70 backdrop-blur hover:bg-blue-500/80 h-9 rounded-xl text-white font-bold"
-        onClick={() => onSellClick?.(skin)}
-      >
-        Sotish
-      </Button>
-    )}
+    {/* Price or Sell Button */}
+    <div className="mt-3">
+      {variant === "buy" ? (
+        <Button className="w-full bg-white text-black border border-slate-300 hover:bg-slate-100 h-10 rounded-xl flex items-center justify-center gap-2 shadow font-bold">
+          <img src={coinMain} alt="Tilav Coin" className="w-6 h-6" />
+          <span className="tracking-wider">{skin.price}</span>
+        </Button>
+      ) : (
+        <Button
+          className="w-full bg-white text-black border border-slate-300 hover:bg-slate-100 h-10 rounded-xl font-bold shadow"
+          onClick={() => onSellClick?.(skin)}
+        >
+          Sotish
+        </Button>
+      )}
+    </div>
   </Card>
 );
