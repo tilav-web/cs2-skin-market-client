@@ -1,10 +1,9 @@
 export interface ISkin {
-  id: number;
-  name: string; // Skin nomi (masalan, "AK-47 | Redline")
-  wear: string; // Sifat (masalan, "Factory New")
-  image: string; // Skin rasmi URL
-  rarity: string; // Nadirlik darajasi (masalan, "Covert")
-  statTrak: boolean; // StatTrak™ holati
-  weapon: string; // Qurol turi (masalan, "AK-47")
-  price: number; // Skinning bozor narxi (USD yoki boshqa valyutada)
+  assetid: string; // Skinning noyob ID'si (trade qilish uchun kerak)
+  classid: string; // Skin model turi
+  instanceid: string; // Skin versiyasi (StatTrak, Souvenir va h.k.)
+  market_hash_name: string; // Skinning to‘liq nomi (masalan: "AK-47 | Redline (Field-Tested)")
+  icon_url: string; // Skin rasmi (SteamCDN dan olinadi)
+  tradable: boolean; // Trade qilish mumkinmi
+  wear?: number; // Skin float (agar mavjud bo‘lsa
 }
