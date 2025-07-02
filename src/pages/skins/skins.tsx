@@ -18,37 +18,12 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { userService } from "@/services/user.service";
 
-// Temporary data, will be replaced with API call
-const ownedSkins: ISkin[] = [
-  {
-    id: 1,
-    weapon: "AK-47",
-    name: "Redline",
-    price: 1550,
-    image:
-      "https://cdn.csgoskins.gg/public/uih/weapons/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbnMvYmFzZV93ZWFwb25zL3dlYXBvbl9hazQ3LmQwMGQxZGZhMDk2MjFjMjk3Njk2ZTM1M2Y0MTMzMzBjOTRlZDUwOTAucG5n/auto/auto/85/notrim/06be7f9eb59aeebc19509c82a43a82b5.webp",
-    rarity: "Classified",
-    wear: "Field-Tested",
-    statTrak: false,
-  },
-  {
-    id: 2,
-    weapon: "AWP",
-    name: "Asiimov",
-    price: 7500,
-    image:
-      "https://cdn.csgoskins.gg/public/uih/weapons/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbnMvYmFzZV93ZWFwb25zL3dlYXBvbl9hazQ3LmQwMGQxZGZhMDk2MjFjMjk3Njk2ZTM1M2Y0MTMzMzBjOTRlZDUwOTAucG5n/auto/auto/85/notrim/06be7f9eb59aeebc19509c82a43a82b5.webp",
-    rarity: "Covert",
-    wear: "Battle-Scarred",
-    statTrak: false,
-  },
-];
-
 export default function Skins() {
   const [selectedSkin, setSelectedSkin] = useState<ISkin | null>(null);
   const [price, setPrice] = useState(0);
   const [isAdvertisement, setIsAdvertisement] = useState(false);
   const commission = isAdvertisement ? price * 0.07 : price * 0.05;
+  const [ownedSkins, setOwnedSkins] = useState<ISkin[]>([]);
 
   const handleSellClick = (skin: ISkin) => {
     setSelectedSkin(skin);
@@ -74,12 +49,12 @@ export default function Skins() {
     (async () => {
       try {
         const data = await userService.findMySkins();
-        console.log(data);
+        setOwnedSkins(data);
       } catch (error) {
         console.error(error);
       }
-    })()
-  }, [])
+    })();
+  }, []);
 
   return (
     <div>
@@ -91,16 +66,22 @@ export default function Skins() {
           savdolar "tilav coin"da amalga oshiriladi. <strong>1 so'm = 1 tilav.</strong>
         </p>
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        {ownedSkins.map((skin) => (
-          <SkinCard
-            key={skin.id}
-            skin={skin}
-            variant="sell"
-            onSellClick={handleSellClick}
-          />
-        ))}
-      </div>
+      {ownedSkins.length === 0 ? (
+        <div className="text-center text-gray-400 py-12">
+          Sizda hozircha skin yo'q.
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {ownedSkins.map((skin) => (
+            <SkinCard
+              key={skin.id}
+              skin={skin}
+              variant="sell"
+              onSellClick={handleSellClick}
+            />
+          ))}
+        </div>
+      )}
 
       <Drawer open={!!selectedSkin} onClose={handleClose}>
         <DrawerContent>
