@@ -44,7 +44,7 @@ export const SkinCard = ({
     </div>
     {/* Sell Button */}
     <div className="mt-3">
-      {variant === "sell" && (
+      {variant === "sell" && skin.tradable && (
         <Button
           className="w-full bg-white text-black border border-slate-300 hover:bg-slate-100 h-10 rounded-xl font-bold shadow dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:hover:bg-slate-800"
           onClick={() => onSellClick?.(skin)}
