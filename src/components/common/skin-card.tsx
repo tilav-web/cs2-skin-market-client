@@ -34,14 +34,13 @@ export const SkinCard = ({
       <span className="inline-block rounded-full px-2 py-0.5 text-xs bg-slate-100 text-slate-700 mt-1 border border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700">
         {skin.market_hash_name}
       </span>
-      <span className={cn(
-        "inline-block rounded-full px-2 py-0.5 text-xs mt-1 border font-bold",
-        skin.tradable
-          ? "bg-green-100 text-green-700 border-green-300 dark:bg-green-900/30 dark:text-white dark:border-green-700"
-          : "bg-red-100 text-red-700 border-red-300 dark:bg-red-900/30 dark:text-white dark:border-red-700"
-      )}>
-        {skin.tradable ? "Tradable" : "Not Tradable"}
-      </span>
+      {!skin.tradable && (
+        <span
+          className={"inline-block rounded-full px-2 py-0.5 text-xs mt-1 border font-bold bg-red-100 text-red-700 border-red-300 dark:bg-red-900/30 dark:text-white dark:border-red-700"}
+        >
+          {skin.tradable ? "" : "Sotib bo'lmaydi"}
+        </span>
+      )}
     </div>
     {/* Sell Button */}
     <div className="mt-3">
@@ -49,6 +48,7 @@ export const SkinCard = ({
         <Button
           className="w-full bg-white text-black border border-slate-300 hover:bg-slate-100 h-10 rounded-xl font-bold shadow dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:hover:bg-slate-800"
           onClick={() => onSellClick?.(skin)}
+          disabled={!skin.tradable}
         >
           Sotish
         </Button>
