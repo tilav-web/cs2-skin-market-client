@@ -6,6 +6,7 @@ import { useUserStore } from "@/stores/auth/user.store";
 import coinMain from "@/assets/coin-main.png";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { formatBalance } from "@/lib/utils";
 
 
 const ownedSkins: ISkin[] = [
@@ -77,7 +78,7 @@ export default function MainPage() {
           <span className="text-gray-500 text-sm">Sizning balansingiz</span>
           <span className="font-bold text-2xl flex items-center gap-2">
             <img src={coinMain} alt="Tilav Coin" className="w-6 h-6" />
-            {user?.balance ?? 0}
+            {formatBalance(user?.balance ?? 0)}
           </span>
           <Button className="mt-2 w-full text-white font-bold">Hisobni to'ldirish</Button>
         </Card>

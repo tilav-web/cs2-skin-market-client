@@ -15,6 +15,7 @@ import coinMain from "@/assets/coin-main.png";
 import { useEffect, useState, type ElementType } from "react";
 import { useNavigate } from "react-router-dom";
 import { Textarea } from "@/components/ui/textarea";
+import { formatBalance } from "@/lib/utils";
 
 const STEAM_PRIVACY_URL = "https://steamcommunity.com/my/edit/settings";
 
@@ -147,7 +148,7 @@ export default function Profile() {
                 <p className="text-xs text-muted-foreground">Balans</p>
                 <p className="font-semibold flex items-center gap-1 text-base">
                   <img src={coinMain} alt="Tilav Coin" className="w-4 h-4" />
-                  {user?.balance?.toLocaleString() ?? 0} tilav
+                  {formatBalance(user?.balance ?? 0)} tilav
                 </p>
               </div>
             </div>

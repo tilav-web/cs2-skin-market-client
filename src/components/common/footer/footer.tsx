@@ -5,6 +5,7 @@ import userIcon from "@/assets/users-avatar-svgrepo-com.svg";
 import coinMain from "@/assets/coin-main.png";
 import { useUserStore } from "@/stores/auth/user.store";
 import SteamPrivate from "@/private/steam-private";
+import { formatBalance } from "@/lib/utils";
 
 export default function Footer() {
   const { user } = useUserStore();
@@ -13,7 +14,7 @@ export default function Footer() {
       <nav className="flex justify-around items-center h-16 px-4">
         <Link to={"/"} className="flex flex-col items-center">
           <img src={coinMain} alt="Balance" className="w-6 h-6" />
-          <span className="text-xs mt-1">{user?.balance ?? 0}</span>
+          <span className="text-xs mt-1">{formatBalance(user?.balance ?? 0)}</span>
         </Link>
         <Link to="/skins" className="flex flex-col items-center">
           <img src={knife} alt="Skins" className="w-6 h-6" />
