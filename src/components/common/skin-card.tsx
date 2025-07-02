@@ -25,15 +25,15 @@ export const SkinCard = ({
 }: SkinCardProps) => (
   <Card
     className={cn(
-      "flex flex-col justify-between text-center border-none p-2 h-64 select-auto",
+      "flex flex-col justify-between text-center border-none p-2 h-64 select-auto transition-transform hover:scale-105 hover:shadow-lg",
       rarityColors[skin.rarity] || rarityColors.Default
     )}
   >
-    <div className="h-16 flex items-center justify-center mt-8 p-1">
+    <div className="h-24 flex items-center justify-center mt-2 p-0.5">
       <img
         src={skin.image}
         alt={skin.name}
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain"
       />
     </div>
     <div>

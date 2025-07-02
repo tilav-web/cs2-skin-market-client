@@ -67,8 +67,22 @@ export default function Skins() {
         </p>
       </div>
       {ownedSkins.length === 0 ? (
-        <div className="text-center text-gray-400 py-12">
-          Sizda hozircha skin yo'q.
+        <div className="text-center text-gray-400 py-12 flex flex-col items-center gap-3">
+          <div className="text-lg font-semibold">Sizda hozircha skin yo'q yoki inventar yopiq.</div>
+          <div className="max-w-xs text-sm text-gray-400">
+            Agar skinlaringiz ko'rinmayotgan bo'lsa, Steam inventaringizni <span className="font-semibold text-blue-500">public</span> qilishingiz kerak.
+            <br />
+            <a
+              href="https://steamcommunity.com/my/edit/settings"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              Steam inventar sozlamalari
+            </a>
+            <br />
+            {`"Inventory `}{'>'}{` Privacy Settings `}{'>'}{` Public" qilib qo'ying.`}
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
