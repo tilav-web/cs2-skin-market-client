@@ -16,7 +16,7 @@ export const SkinCard = ({
 }: SkinCardProps) => (
   <Card
     className={cn(
-      "relative flex flex-col gap-2 text-center rounded-xl shadow-lg border border-slate-200 bg-gradient-to-b from-white/80 to-slate-200/60 p-3 min-h-0 select-auto transition-transform hover:scale-105 hover:shadow-2xl overflow-hidden",
+      "relative flex flex-col gap-2 text-center rounded-xl shadow-lg border border-slate-200 bg-gradient-to-b from-white/80 to-slate-200/60 p-3 min-h-0 select-auto transition-transform overflow-hidden",
       "dark:border-slate-700 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-800/60"
     )}
   >
