@@ -17,13 +17,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { userService } from "@/services/user.service";
+import { useSkinsStore } from '@/stores/skins/skins.store';
 
 export default function Skins() {
   const [selectedSkin, setSelectedSkin] = useState<ISkin | null>(null);
   const [price, setPrice] = useState(0);
   const [isAdvertisement, setIsAdvertisement] = useState(false);
   const commission = isAdvertisement ? price * 0.07 : price * 0.05;
-  const [ownedSkins, setOwnedSkins] = useState<ISkin[]>([]);
+
+  const { skins, loading, setSkins, setLoading } = useSkinsStore();
 
   const handleSellClick = (skin: ISkin) => {
     setSelectedSkin(skin);
@@ -46,15 +48,19 @@ export default function Skins() {
   };
 
   useEffect(() => {
+    if (skins.length > 0) return;
+    setLoading(true);
     (async () => {
       try {
         const data = await userService.findMySkins();
-        setOwnedSkins(data);
+        setSkins(data);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     })();
-  }, []);
+  }, [setSkins, setLoading, skins.length]);
 
   return (
     <div>
@@ -66,7 +72,11 @@ export default function Skins() {
           savdolar "tilav coin"da amalga oshiriladi. <strong>1 so'm = 1 tilav.</strong>
         </p>
       </div>
-      {ownedSkins.length === 0 ? (
+      {loading ? (
+        <div className="flex justify-center items-center py-12 text-gray-400">
+          Skinlar yuklanmoqda...
+        </div>
+      ) : skins.length === 0 ? (
         <div className="text-center text-gray-400 py-12 flex flex-col items-center gap-3">
           <div className="text-lg font-semibold">Sizda hozircha skin yo'q yoki inventar yopiq.</div>
           <div className="max-w-xs text-sm text-gray-400">
@@ -86,7 +96,7 @@ export default function Skins() {
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {ownedSkins.map((skin) => (
+          {skins.map((skin) => (
             <SkinCard
               key={skin.id}
               skin={skin}
