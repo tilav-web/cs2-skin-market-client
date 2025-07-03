@@ -48,25 +48,6 @@ export default function Skins() {
     handleClose();
   };
 
-  function isAxios429Error(error: unknown): boolean {
-    if (
-      typeof error === 'object' &&
-      error !== null &&
-      'response' in error &&
-      typeof (error as { response?: unknown }).response === 'object' &&
-      (error as { response?: { status?: number } }).response !== null
-    ) {
-      const response = (error as { response?: { status?: number } }).response;
-      return (
-        typeof response === 'object' &&
-        response !== null &&
-        'status' in response &&
-        (response as { status?: number }).status === 429
-      );
-    }
-    return false;
-  }
-
   useEffect(() => {
     if (skins.length > 0) return;
     setLoading(true);
@@ -76,11 +57,7 @@ export default function Skins() {
         const data = await userService.findMySkins();
         setSkins(data);
       } catch (error: unknown) {
-        if (isAxios429Error(error)) {
-          setFetchError("Hozircha skinlarni olish imkoni yo'q, chunki Steam API so'rovlar ko'pligi sababli vaqtincha bloklangan.");
-        } else {
-          setFetchError("Xatolik yuz berdi. Iltimos, keyinroq urinib ko'ring.");
-        }
+        setFetchError("Hozircha skinlarni olish imkoni yo'q. Bu ko'pincha Steam API so'rovlar ko'pligi sababli vaqtincha cheklov qo'yilgani uchun yuz beradi. Iltimos, birozdan so'ng qayta urinib ko'ring.");
         console.error(error);
       } finally {
         setLoading(false);
