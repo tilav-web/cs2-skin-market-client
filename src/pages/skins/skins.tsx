@@ -18,12 +18,14 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { userService } from "@/services/user.service";
 import { useSkinsStore } from '@/stores/skins/skins.store';
+import { useUserStore } from "@/stores/auth/user.store";
 
 export default function Skins() {
   const [selectedSkin, setSelectedSkin] = useState<ISkin | null>(null);
   const [price, setPrice] = useState(0);
   const [isAdvertisement, setIsAdvertisement] = useState(false);
   const commission = isAdvertisement ? price * 0.07 : price * 0.05;
+  const { user } = useUserStore()
 
   const { skins, loading, setSkins, setLoading } = useSkinsStore();
 
@@ -52,7 +54,8 @@ export default function Skins() {
     setLoading(true);
     (async () => {
       try {
-        const data = await userService.findMySkins();
+        if(!user?.steam_id) return
+        const data = await userService.findMySkins(user?.steam_id);
         setSkins(data);
       } catch (error) {
         console.error(error);
