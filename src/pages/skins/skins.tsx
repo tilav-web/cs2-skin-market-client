@@ -23,6 +23,7 @@ export default function Skins() {
   const [selectedSkin, setSelectedSkin] = useState<ISkin | null>(null);
   const [price, setPrice] = useState(0);
   const [isAdvertisement, setIsAdvertisement] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const commission = isAdvertisement ? price * 0.07 : price * 0.05;
 
   const { skins, loading, setSkins, setLoading } = useSkinsStore();
@@ -47,14 +48,39 @@ export default function Skins() {
     handleClose();
   };
 
+  function isAxios429Error(error: unknown): boolean {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'response' in error &&
+      typeof (error as { response?: unknown }).response === 'object' &&
+      (error as { response?: { status?: number } }).response !== null
+    ) {
+      const response = (error as { response?: { status?: number } }).response;
+      return (
+        typeof response === 'object' &&
+        response !== null &&
+        'status' in response &&
+        (response as { status?: number }).status === 429
+      );
+    }
+    return false;
+  }
+
   useEffect(() => {
     if (skins.length > 0) return;
     setLoading(true);
+    setFetchError(null);
     (async () => {
       try {
         const data = await userService.findMySkins();
         setSkins(data);
-      } catch (error) {
+      } catch (error: unknown) {
+        if (isAxios429Error(error)) {
+          setFetchError("Hozircha skinlarni olish imkoni yo'q, chunki Steam API so'rovlar ko'pligi sababli vaqtincha bloklangan.");
+        } else {
+          setFetchError("Xatolik yuz berdi. Iltimos, keyinroq urinib ko'ring.");
+        }
         console.error(error);
       } finally {
         setLoading(false);
@@ -76,22 +102,25 @@ export default function Skins() {
         <div className="flex justify-center items-center py-12 text-gray-400">
           Skinlar yuklanmoqda...
         </div>
+      ) : fetchError ? (
+        <div className="text-center text-red-500 py-12 flex flex-col items-center gap-3">
+          <div className="text-lg font-semibold">{fetchError}</div>
+        </div>
       ) : skins.length === 0 ? (
         <div className="text-center text-gray-400 py-12 flex flex-col items-center gap-3">
           <div className="text-lg font-semibold">Sizda hozircha skin yo'q yoki inventar yopiq.</div>
           <div className="max-w-xs text-sm text-gray-400">
-            Agar skinlaringiz ko'rinmayotgan bo'lsa, Steam inventaringizni <span className="font-semibold text-blue-500">public</span> qilishingiz kerak.
+            Agar skinlaringiz ko'rinmayotgan bo'lsa, Steam inventaringizni <span className="font-semibold text-blue-500 underline cursor-pointer">
+              <a
+                href="https://steamcommunity.com/my/edit/settings"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                public
+              </a>
+            </span> qilishingiz kerak.
             <br />
-            <a
-              href="https://steamcommunity.com/my/edit/settings"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-            >
-              Steam inventar sozlamalari
-            </a>
-            <br />
-            {`"Inventory `}{'>'}{` Privacy Settings `}{'>'}{` Public" qilib qo'ying.`}
+            {`"Inventory > Privacy Settings > Public" qilib qo'ying.`}
           </div>
         </div>
       ) : (
