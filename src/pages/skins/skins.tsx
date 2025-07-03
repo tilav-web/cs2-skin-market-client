@@ -80,8 +80,11 @@ export default function Skins() {
           Skinlar yuklanmoqda...
         </div>
       ) : fetchError ? (
-        <div className="text-center text-red-500 py-12 flex flex-col items-center gap-3">
-          <div className="text-lg font-semibold">{fetchError}</div>
+        <div className="flex flex-col items-center justify-center py-12">
+          <div className="flex items-center gap-2 bg-yellow-100 border border-yellow-300 rounded-lg px-6 py-4 shadow-sm">
+            <span className="text-2xl">⚠️</span>
+            <span className="text-yellow-800 text-base font-medium">{fetchError}</span>
+          </div>
         </div>
       ) : skins.length === 0 ? (
         <div className="text-center text-gray-400 py-12 flex flex-col items-center gap-3">
