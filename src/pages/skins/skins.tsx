@@ -13,29 +13,29 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import coinSub from "@/assets/coin-sub.png";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { userService } from "@/services/user.service";
 import { useSkinsStore } from '@/stores/skins/skins.store';
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function Skins() {
   const [selectedSkin, setSelectedSkin] = useState<ISkin | null>(null);
   const [price, setPrice] = useState(0);
-  const [isAdvertisement, setIsAdvertisement] = useState(false);
-  const [adHours, setAdHours] = useState(1); // Reklama uchun soat
+  const [isAdvertisement, setIsAdvertisement] = useState(false); // Reklama bo'limi uchun
+  const [adHours, setAdHours] = useState(0); // Telegram uchun soat (0 = post qilinmaydi)
   const [fetchError, setFetchError] = useState<string | null>(null);
   // Reklama narxi va komissiya hisoblash
-  const adPrice = isAdvertisement ? adHours * 1000 : 0;
-  const commission = isAdvertisement ? adPrice * 0.07 : price * 0.05;
+  const telegramPrice = adHours > 0 ? adHours * 1000 : 0;
+  const commission = isAdvertisement ? price * 0.07 : price * 0.05;
 
   const { skins, loading, setSkins, setLoading } = useSkinsStore();
 
   const handleSellClick = (skin: ISkin) => {
     setSelectedSkin(skin);
     setPrice(0); // Yangi interfeysda narx yo'q, default 0
-    setIsAdvertisement(false); // Reset checkbox on new selection
-    setAdHours(1); // Reset ad hours
+    setIsAdvertisement(false); // Reset reklama bo'limi
+    setAdHours(0); // Reset telegram soat
   };
 
   const handleClose = () => {
@@ -43,20 +43,12 @@ export default function Skins() {
   };
 
   const handleSell = () => {
-    if (isAdvertisement && adHours < 1) {
-      toast.error("Soat soni kamida 1 bo'lishi kerak.");
-      return;
-    }
-    if (isAdvertisement && adPrice <= 19999) {
-      toast.error("Reklama uchun umumiy narx 19999 dan katta bo'lishi kerak.");
+    if (adHours > 0 && telegramPrice <= 19999) {
+      toast.error("Telegram uchun umumiy narx 19999 dan katta bo'lishi kerak.");
       return;
     }
     // TODO: Implement the actual sell logic with an API call
-    if (isAdvertisement) {
-      console.log(`Selling ${selectedSkin?.market_hash_name} for ${adPrice} tilav (ad for ${adHours} hours), commission: ${commission}`);
-    } else {
-      console.log(`Selling ${selectedSkin?.market_hash_name} for ${price}, commission: ${commission}`);
-    }
+    console.log(`Selling ${selectedSkin?.market_hash_name} for ${price} tilav, reklama: ${isAdvertisement}, komissiya: ${commission}, telegram: ${adHours} soat (${telegramPrice} tilav)`);
     handleClose();
   };
 
@@ -152,36 +144,15 @@ export default function Skins() {
                 </div>
                 <div className="mt-4">
                   <label htmlFor="price" className="text-sm font-medium">
-                    {isAdvertisement ? 'Reklama narxi (tilav)' : 'Narx (tilav)'}
+                    Narx (tilav)
                   </label>
-                  {isAdvertisement ? (
-                    <div className="space-y-2 mt-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">Soat soni:</span>
-                        <Input
-                          id="adHours"
-                          type="number"
-                          min={1}
-                          value={adHours}
-                          onChange={e => setAdHours(Math.max(1, Number(e.target.value)))}
-                          className="w-20"
-                        />
-                        <span className="text-xs text-gray-500">(1 soat = 1000 tilav)</span>
-                      </div>
-                      <div className="text-xs text-blue-600 bg-blue-50 rounded px-2 py-1">
-                        Telegram kanalimizda skiningiz <b>topda</b> ko'rsatiladi. Har 1 soat uchun 1000 tilav olinadi. Minimal narx 19999 tilav. <br />
-                        Masalan: 5 soat = 5000 tilav.
-                      </div>
-                    </div>
-                  ) : (
-                    <Input
-                      id="price"
-                      type="number"
-                      value={price}
-                      onChange={(e) => setPrice(Number(e.target.value))}
-                      className="mt-1"
-                    />
-                  )}
+                  <Input
+                    id="price"
+                    type="number"
+                    value={price}
+                    onChange={(e) => setPrice(Number(e.target.value))}
+                    className="mt-1"
+                  />
                   <div className="flex items-center space-x-2 mt-4">
                     <Checkbox
                       id="advertisement"
@@ -189,22 +160,38 @@ export default function Skins() {
                       onCheckedChange={(checked) => setIsAdvertisement(Boolean(checked))}
                     />
                     <Label htmlFor="advertisement" className="text-sm font-medium">
-                      Reklama bo'limiga joylashtirish (Telegram kanal topida)
+                      Reklama bo'limiga joylashtirish (komissiya 7%)
                     </Label>
                   </div>
-                  {isAdvertisement && (
-                    <p className="text-xs text-muted-foreground mt-1.5 ml-1">
-                      Skin {adHours} soat davomida reklama bo'limida va Telegram kanalimiz topida turadi. Komissiya 7% bo'ladi.
-                    </p>
-                  )}
+                  <div className="flex items-center gap-2 mt-3">
+                    <span className="text-sm">Telegram kanal topida soat soni:</span>
+                    <select
+                      id="adHours"
+                      value={adHours}
+                      onChange={e => setAdHours(Number(e.target.value))}
+                      className="border rounded px-2 py-1 text-sm"
+                    >
+                      {Array.from({ length: 25 }, (_, i) => (
+                        <option key={i} value={i}>{i} soat</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="text-xs text-blue-600 bg-blue-50 rounded px-2 py-1 mt-2">
+                    Agar Telegram kanalimizda reklama xohlasangiz, soat sonini tanlang. Har 1 soat uchun 1000 tilav olinadi. Minimal telegram reklama narxi 19999 tilav. 0 soat tanlansa, post qilinmaydi.<br />
+                    Masalan: 5 soat = 5000 tilav.
+                  </div>
                   <div className="mt-3 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-500">Komissiya ({isAdvertisement ? "7%" : "5%"}):</span>
-                      <span className="font-medium">{(isAdvertisement ? commission : commission).toLocaleString()} tilav</span>
+                      <span className="font-medium">{commission.toLocaleString()} tilav</span>
+                    </div>
+                    <div className="flex justify-between mt-1">
+                      <span className="text-gray-500">Telegram reklama narxi:</span>
+                      <span className="font-medium">{telegramPrice.toLocaleString()} tilav</span>
                     </div>
                     <div className="flex justify-between font-bold mt-1">
                       <span>Siz olasiz:</span>
-                      <span>{(isAdvertisement ? adPrice - commission : price - commission).toLocaleString()} tilav</span>
+                      <span>{(price - commission).toLocaleString()} tilav</span>
                     </div>
                   </div>
                 </div>
