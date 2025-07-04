@@ -62,7 +62,7 @@ export const SkinCard = ({
           asChild
           className="w-full bg-white text-black border border-slate-300 hover:bg-slate-100 h-10 rounded-xl font-bold shadow dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:hover:bg-slate-800"
         >
-          <Link className="flex items-center gap-1" to={`/skins/buy/${skin.assetid}`}>
+          <Link className="flex items-center gap-1" to={`/skins/buy/${skin._id}`}>
             <img className="w-4 h-4" src={coinMain} alt={skin.market_hash_name} />
             {skin.price.toLocaleString()}
           </Link>

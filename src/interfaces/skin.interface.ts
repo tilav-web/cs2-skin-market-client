@@ -1,4 +1,5 @@
 export interface ISkin {
+  _id: string
   assetid: string; // Skinning noyob ID'si (trade qilish uchun kerak)
   classid: string; // Skin model turi
   instanceid: string; // Skin versiyasi (StatTrak, Souvenir va h.k.)
