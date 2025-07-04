@@ -3,6 +3,7 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import type { ISkin } from "@/interfaces/skin.interface";
 import { Link } from "react-router-dom";
+import coinMain from '@/assets/coin-main.png'
 
 interface SkinCardProps {
   skin: ISkin;
@@ -37,7 +38,9 @@ export const SkinCard = ({
       </span>
       {!skin.tradable && (
         <span
-          className={"inline-block rounded-full px-2 py-0.5 text-xs mt-1 border font-bold bg-red-100 text-red-700 border-red-300 dark:bg-red-900/30 dark:text-white dark:border-red-700"}
+          className={
+            "inline-block rounded-full px-2 py-0.5 text-xs mt-1 border font-bold bg-red-100 text-red-700 border-red-300 dark:bg-red-900/30 dark:text-white dark:border-red-700"
+          }
         >
           {skin.tradable ? "" : "Sotib bo'lmaydi"}
         </span>
@@ -54,13 +57,14 @@ export const SkinCard = ({
           Sotish
         </Button>
       )}
-      {variant === "buy" && skin.tradable && typeof skin.price === 'number' && (
+      {variant === "buy" && skin.tradable && typeof skin.price === "number" && (
         <Button
           asChild
-          className="w-full bg-green-500 text-white border border-green-600 hover:bg-green-600 h-10 rounded-xl font-bold shadow dark:bg-green-700 dark:text-white dark:border-green-800 dark:hover:bg-green-800 mt-2"
+          className="w-full bg-white text-black border border-slate-300 hover:bg-slate-100 h-10 rounded-xl font-bold shadow dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:hover:bg-slate-800"
         >
-          <Link to={`/skins/buy/${skin.assetid}`}>
-            {skin.price.toLocaleString()} tilav
+          <Link className="flex items-center gap-1" to={`/skins/buy/${skin.assetid}`}>
+            <img className="w-4 h-4" src={coinMain} alt={skin.market_hash_name} />
+            {skin.price.toLocaleString()}
           </Link>
         </Button>
       )}
