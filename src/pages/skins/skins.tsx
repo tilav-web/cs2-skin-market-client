@@ -209,7 +209,7 @@ export default function Skins() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="text-xs text-blue-600 bg-blue-50 rounded px-2 py-1 mt-2">
+                  <div className="px-2 py-0.5 text-xs bg-slate-100 text-slate-700 mt-1 border border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700">
                     Telegram kanalda topda ushlab turish. Soatiga 1000 tilav olinadi.
                   </div>
                   <div className="mt-3 text-sm">

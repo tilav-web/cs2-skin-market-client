@@ -31,7 +31,7 @@ export const SkinCard = ({
     </div>
     {/* Name & IDs */}
     <div className="flex flex-col flex-grow min-h-0 justify-center">
-      <span className="inline-block rounded-full px-2 py-0.5 text-xs bg-slate-100 text-slate-700 mt-1 border border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700">
+      <span className="inline-block rounded-xl px-2 py-0.5 text-xs bg-slate-100 text-slate-700 mt-1 border border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700">
         {skin.market_hash_name}
       </span>
       {!skin.tradable && (
