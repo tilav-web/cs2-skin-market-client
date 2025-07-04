@@ -44,62 +44,68 @@ export default function BuySkinPage() {
       </div>
       {/* Info section */}
       <div className="flex-1 flex flex-col items-center px-4 pt-4 pb-32 w-full">
-        <Card className="w-full max-w-sm mx-auto flex flex-col items-center gap-4 p-4 shadow-lg rounded-2xl bg-white/90 dark:bg-slate-900/90">
-          <div className="w-full flex flex-col items-center gap-2">
-            <div className="font-bold text-xl text-center break-words leading-tight">
+        <Card className="w-full max-w-sm mx-auto flex flex-col items-center gap-4 p-5 shadow-lg rounded-2xl bg-white/90 dark:bg-slate-900/90">
+          {/* Title and price */}
+          <div className="w-full flex flex-col items-center gap-1">
+            <div className="font-bold text-xl text-center break-words leading-tight mb-1">
               {skin.market_hash_name}
             </div>
-            <div className="flex flex-wrap gap-2 justify-center mt-1">
-              <Badge className="bg-green-500 text-white font-bold px-3 py-1 text-xs rounded-full">
-                {skin.price.toLocaleString()} tilav
-              </Badge>
-              {skin.tradable ? (
-                <Badge className="bg-blue-500 text-white px-3 py-1 text-xs rounded-full">Tradable</Badge>
-              ) : (
-                <Badge className="bg-red-500 text-white px-3 py-1 text-xs rounded-full">Sotib bo'lmaydi</Badge>
-              )}
-              {skin.advertising && (
-                <Badge className="bg-yellow-500 text-white px-3 py-1 text-xs rounded-full">Reklama</Badge>
-              )}
-              <Badge className={
-                skin.status === "available"
-                  ? "bg-green-600 text-white px-3 py-1 text-xs rounded-full"
-                  : skin.status === "pending"
-                  ? "bg-yellow-600 text-white px-3 py-1 text-xs rounded-full"
-                  : skin.status === "sold"
-                  ? "bg-gray-600 text-white px-3 py-1 text-xs rounded-full"
-                  : "bg-red-600 text-white px-3 py-1 text-xs rounded-full"
-              }>
-                {skin.status === "available"
-                  ? "Mavjud"
-                  : skin.status === "pending"
-                  ? "Kutilmoqda"
-                  : skin.status === "sold"
-                  ? "Sotilgan"
-                  : "Bekor qilingan"}
-              </Badge>
+            <div className="text-green-600 dark:text-green-400 font-extrabold text-2xl mb-2">
+              {skin.price.toLocaleString()} <span className="text-base font-semibold">tilav</span>
             </div>
-            <div className="flex flex-col gap-1 w-full mt-4">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">ClassID:</span>
-                <span className="font-medium">{skin.classid}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">InstanceID:</span>
-                <span className="font-medium">{skin.instanceid}</span>
-              </div>
-            </div>
-            {telegramPostUrl && (
-              <Link
-                to={telegramPostUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 w-full text-center text-blue-600 underline text-sm font-medium hover:text-blue-800 transition"
-              >
-                Telegram postini ko‘rish
-              </Link>
+          </div>
+          {/* Status and badges */}
+          <div className="flex flex-wrap gap-2 justify-center w-full mb-2">
+            <Badge className={
+              skin.status === "available"
+                ? "bg-green-600 text-white px-3 py-1 text-xs rounded-full"
+                : skin.status === "pending"
+                ? "bg-yellow-600 text-white px-3 py-1 text-xs rounded-full"
+                : skin.status === "sold"
+                ? "bg-gray-600 text-white px-3 py-1 text-xs rounded-full"
+                : "bg-red-600 text-white px-3 py-1 text-xs rounded-full"
+            }>
+              {skin.status === "available"
+                ? "Mavjud"
+                : skin.status === "pending"
+                ? "Kutilmoqda"
+                : skin.status === "sold"
+                ? "Sotilgan"
+                : "Bekor qilingan"}
+            </Badge>
+            {skin.tradable ? (
+              <Badge className="bg-blue-500 text-white px-3 py-1 text-xs rounded-full">Tradable</Badge>
+            ) : (
+              <Badge className="bg-red-500 text-white px-3 py-1 text-xs rounded-full">Sotib bo'lmaydi</Badge>
+            )}
+            {skin.advertising && (
+              <Badge className="bg-yellow-500 text-white px-3 py-1 text-xs rounded-full">Reklama</Badge>
             )}
           </div>
+          {/* Divider */}
+          <div className="w-full border-t border-slate-200 dark:border-slate-700 my-2" />
+          {/* Details */}
+          <div className="w-full flex flex-col gap-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-500">Class ID:</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{skin.classid}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Instance ID:</span>
+              <span className="font-medium text-gray-900 dark:text-gray-100">{skin.instanceid}</span>
+            </div>
+          </div>
+          {/* Telegram post link */}
+          {telegramPostUrl && (
+            <Link
+              to={telegramPostUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 w-full text-center text-blue-600 underline text-sm font-medium hover:text-blue-800 transition"
+            >
+              Telegram postini ko‘rish
+            </Link>
+          )}
         </Card>
       </div>
       {/* Sticky buy button */}
