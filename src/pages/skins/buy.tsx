@@ -36,13 +36,6 @@ export default function BuySkinPage() {
   if (skin.message_id) {
     telegramPostUrl = `https://t.me/c/${skin.message_id.replace("-100", "")}`;
   }
-
-  const narx = (
-    <span className="flex items-center gap-1 font-semibold">
-      <img src={coinMain} alt="Tilav Coin" className="w-4 h-4 inline-block" />
-      {skin.price.toLocaleString()}{" "}
-    </span>
-  );
   const holat =
     skin.status === "sold"
       ? "sotilgan"
@@ -94,28 +87,26 @@ export default function BuySkinPage() {
                 </div>
                 <div className="border-b border-gray-700 flex items-center justify-between">
                   <p className="py-2 px-3 font-medium">Narx</p>
-                  <p className="py-2 px-3 text-right">{narx}</p>
+                  <p>
+                    <img
+                      src={coinMain}
+                      alt="Tilav Coin"
+                      className="w-4 h-4 inline-block"
+                    />
+                    {skin.price.toLocaleString()}{" "}
+                  </p>
                 </div>
                 <div>
-                  <p className="py-2 px-3 font-medium flex items-center justify-between">
-                    Holat
-                  </p>
-                  <p className="py-2 px-3 text-right">{holat}</p>
+                  <p className="py-2 px-3 font-medium flex-1">Holati</p>
+                  <p>{holat}</p>
+                </div>
+                <div>
+                  <p className="py-2 px-3 font-medium flex-1">Telegram channel</p>
+                  <Link to={telegramPostUrl ?? ""}>post</Link>
                 </div>
               </div>
             </table>
           </div>
-          {/* Telegram post link */}
-          {telegramPostUrl && (
-            <Link
-              to={telegramPostUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 w-full text-center text-blue-600 underline text-sm font-medium hover:text-blue-800 transition"
-            >
-              Telegram postini ko‘rish
-            </Link>
-          )}
         </Card>
       </div>
       {/* Sticky buy button */}
