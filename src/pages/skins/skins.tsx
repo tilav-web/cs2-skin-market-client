@@ -15,10 +15,16 @@ import { Input } from "@/components/ui/input";
 import coinSub from "@/assets/coin-sub.png";
 import { toast } from "sonner";
 import { userService } from "@/services/user.service";
-import { useSkinsStore } from '@/stores/skins/skins.store';
+import { useSkinsStore } from "@/stores/skins/skins.store";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Skins() {
   const [selectedSkin, setSelectedSkin] = useState<ISkin | null>(null);
@@ -49,7 +55,9 @@ export default function Skins() {
       return;
     }
     // TODO: Implement the actual sell logic with an API call
-    console.log(`Selling ${selectedSkin?.market_hash_name} for ${price} tilav, reklama: ${isAdvertisement}, komissiya: ${commission}, telegram: ${adHours} soat (${telegramPrice} tilav)`);
+    console.log(
+      `Selling ${selectedSkin?.market_hash_name} for ${price} tilav, reklama: ${isAdvertisement}, komissiya: ${commission}, telegram: ${adHours} soat (${telegramPrice} tilav)`
+    );
     handleClose();
   };
 
@@ -62,7 +70,9 @@ export default function Skins() {
         const data = await userService.findMySkins();
         setSkins(data);
       } catch (error: unknown) {
-        setFetchError("Hozircha skinlarni olish imkoni yo'q. Bu ko'pincha Steam API so'rovlar ko'pligi sababli vaqtincha cheklov qo'yilgani uchun yuz beradi. Iltimos, birozdan so'ng qayta urinib ko'ring.");
+        setFetchError(
+          "Hozircha skinlarni olish imkoni yo'q. Bu ko'pincha Steam API so'rovlar ko'pligi sababli vaqtincha cheklov qo'yilgani uchun yuz beradi. Iltimos, birozdan so'ng qayta urinib ko'ring."
+        );
         console.error(error);
       } finally {
         setLoading(false);
@@ -76,8 +86,8 @@ export default function Skins() {
         <img src={coinSub} alt="Tilav Coin" className="w-24 h-24" />
         <p className="font-bold text-xl mt-2">Tilav coin</p>
         <p className="text-center text-sm text-gray-500 px-4">
-          Bu yerda siz o'z skinlaringizni sotishingiz mumkin. Barcha
-          savdolar "tilav coin"da amalga oshiriladi. <strong>1 so'm = 1 tilav.</strong>
+          Bu yerda siz o'z skinlaringizni sotishingiz mumkin. Barcha savdolar
+          "tilav coin"da amalga oshiriladi. <strong>1 so'm = 1 tilav.</strong>
         </p>
       </div>
       {loading ? (
@@ -88,14 +98,19 @@ export default function Skins() {
         <div className="flex flex-col items-center justify-center py-12">
           <div className="flex items-center gap-2 bg-yellow-100 border border-yellow-300 rounded-lg px-6 py-4 shadow-sm">
             <span className="text-2xl">⚠️</span>
-            <span className="text-yellow-800 text-base font-medium">{fetchError}</span>
+            <span className="text-yellow-800 text-base font-medium">
+              {fetchError}
+            </span>
           </div>
         </div>
       ) : skins.length === 0 ? (
         <div className="text-center text-gray-400 py-12 flex flex-col items-center gap-3">
-          <div className="text-lg font-semibold">Sizda hozircha skin yo'q yoki inventar yopiq.</div>
+          <div className="text-lg font-semibold">
+            Sizda hozircha skin yo'q yoki inventar yopiq.
+          </div>
           <div className="max-w-xs text-sm text-gray-400">
-            Agar skinlaringiz ko'rinmayotgan bo'lsa, Steam inventaringizni <span className="font-semibold text-blue-500 underline cursor-pointer">
+            Agar skinlaringiz ko'rinmayotgan bo'lsa, Steam inventaringizni{" "}
+            <span className="font-semibold text-blue-500 underline cursor-pointer">
               <a
                 href="https://steamcommunity.com/my/edit/settings"
                 target="_blank"
@@ -103,7 +118,8 @@ export default function Skins() {
               >
                 public
               </a>
-            </span> qilishingiz kerak.
+            </span>{" "}
+            qilishingiz kerak.
             <br />
             {`"Inventory > Privacy Settings > Public" qilib qo'ying.`}
           </div>
@@ -130,7 +146,11 @@ export default function Skins() {
                 <DrawerDescription>
                   {selectedSkin.market_hash_name}
                   <br />
-                  <span className={selectedSkin.tradable ? "text-green-600" : "text-red-600"}>
+                  <span
+                    className={
+                      selectedSkin.tradable ? "text-green-600" : "text-red-600"
+                    }
+                  >
                     {selectedSkin.tradable ? "Tradable" : "Not Tradable"}
                   </span>
                 </DrawerDescription>
@@ -158,37 +178,56 @@ export default function Skins() {
                     <Checkbox
                       id="advertisement"
                       checked={isAdvertisement}
-                      onCheckedChange={(checked) => setIsAdvertisement(Boolean(checked))}
+                      onCheckedChange={(checked) =>
+                        setIsAdvertisement(Boolean(checked))
+                      }
                     />
-                    <Label htmlFor="advertisement" className="text-sm font-medium">
+                    <Label
+                      htmlFor="advertisement"
+                      className="text-sm font-medium"
+                    >
                       Reklama bo'limiga joylashtirish (komissiya 7%)
                     </Label>
                   </div>
                   <div className="flex items-center gap-2 mt-3">
-                    <span className="text-sm">Telegram kanal topida soat soni:</span>
-                    <Select value={String(adHours)} onValueChange={v => setAdHours(Number(v))}>
+                    <span className="text-sm">
+                      Telegram kanal topida soat soni:
+                    </span>
+                    <Select
+                      value={String(adHours)}
+                      onValueChange={(v) => setAdHours(Number(v))}
+                    >
                       <SelectTrigger className="w-32">
                         <SelectValue placeholder="Soat tanlang" />
                       </SelectTrigger>
                       <SelectContent>
                         {Array.from({ length: 25 }, (_, i) => (
-                          <SelectItem key={i} value={String(i)}>{i} soat</SelectItem>
+                          <SelectItem key={i} value={String(i)}>
+                            {i} soat
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="text-xs text-blue-600 bg-blue-50 rounded px-2 py-1 mt-2">
-                    Agar Telegram kanalimizda reklama xohlasangiz, soat sonini tanlang. Har 1 soat uchun 1000 tilav olinadi. Minimal telegram reklama narxi 19999 tilav. 0 soat tanlansa, post qilinmaydi.<br />
-                    Masalan: 5 soat = 5000 tilav.
+                    Telegram kanalda topda ushlab turish. Soatiga 1000 tilav olinadi.
                   </div>
                   <div className="mt-3 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Komissiya ({isAdvertisement ? "7%" : "5%"}):</span>
-                      <span className="font-medium">{commission.toLocaleString()} tilav</span>
+                      <span className="text-gray-500">
+                        Komissiya ({isAdvertisement ? "7%" : "5%"}):
+                      </span>
+                      <span className="font-medium">
+                        {commission.toLocaleString()} tilav
+                      </span>
                     </div>
                     <div className="flex justify-between mt-1">
-                      <span className="text-gray-500">Telegram reklama narxi:</span>
-                      <span className="font-medium">{telegramPrice.toLocaleString()} tilav</span>
+                      <span className="text-gray-500">
+                        Telegram reklama narxi:
+                      </span>
+                      <span className="font-medium">
+                        {telegramPrice.toLocaleString()} tilav
+                      </span>
                     </div>
                     <div className="flex justify-between font-bold mt-1">
                       <span>Siz olasiz:</span>
@@ -198,7 +237,9 @@ export default function Skins() {
                 </div>
               </div>
               <DrawerFooter className="bg-muted/10 border-t p-4">
-                <Button onClick={handleSell} className="text-white font-bold">Sotish</Button>
+                <Button onClick={handleSell} className="text-white font-bold">
+                  Sotish
+                </Button>
                 <DrawerClose asChild>
                   <Button variant="outline" onClick={handleClose}>
                     Bekor qilish
