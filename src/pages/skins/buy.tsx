@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { ISkin } from "@/interfaces/skin.interface";
 import { skinService } from "@/services/skin.service";
+import { Badge } from "@/components/ui/badge";
 
 export default function BuySkinPage() {
   const { id } = useParams<{ id: string }>();
@@ -25,13 +26,67 @@ export default function BuySkinPage() {
   if (error || !skin) return <div className="text-center mt-10 text-red-500">{error || "Skin topilmadi"}</div>;
 
   return (
-    <div className="flex flex-col items-center mt-8">
-      <Card className="p-6 w-full max-w-sm flex flex-col items-center gap-4">
-        <img src={skin.icon_url} alt={skin.market_hash_name} className="w-32 h-32 object-contain" />
-        <div className="font-bold text-lg text-center">{skin.market_hash_name}</div>
-        <div className="text-green-600 font-semibold text-xl">{skin.price?.toLocaleString()} tilav</div>
-        <Button className="w-full font-bold text-white bg-green-600 hover:bg-green-700 mt-4">Sotib olish</Button>
-      </Card>
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
+      <div className="flex-1 flex flex-col items-center px-4 pt-6 pb-28">
+        <Card className="w-full max-w-sm mx-auto flex flex-col items-center gap-4 p-4 shadow-lg rounded-2xl">
+          <img
+            src={skin.icon_url}
+            alt={skin.market_hash_name}
+            className="w-40 h-40 object-contain rounded-xl border bg-white dark:bg-slate-900 shadow"
+          />
+          <div className="w-full flex flex-col items-center gap-2">
+            <div className="font-bold text-lg text-center break-words leading-tight">
+              {skin.market_hash_name}
+            </div>
+            <div className="flex flex-wrap gap-2 justify-center mt-1">
+              <Badge className="bg-green-500 text-white font-bold px-3 py-1 text-xs rounded-full">
+                {skin.price.toLocaleString()} tilav
+              </Badge>
+              {skin.tradable ? (
+                <Badge className="bg-blue-500 text-white px-3 py-1 text-xs rounded-full">Tradable</Badge>
+              ) : (
+                <Badge className="bg-red-500 text-white px-3 py-1 text-xs rounded-full">Sotib bo'lmaydi</Badge>
+              )}
+              {skin.advertising && (
+                <Badge className="bg-yellow-500 text-white px-3 py-1 text-xs rounded-full">Reklama</Badge>
+              )}
+              <Badge className={
+                skin.status === "available"
+                  ? "bg-green-600 text-white px-3 py-1 text-xs rounded-full"
+                  : skin.status === "pending"
+                  ? "bg-yellow-600 text-white px-3 py-1 text-xs rounded-full"
+                  : skin.status === "sold"
+                  ? "bg-gray-600 text-white px-3 py-1 text-xs rounded-full"
+                  : "bg-red-600 text-white px-3 py-1 text-xs rounded-full"
+              }>
+                {skin.status === "available"
+                  ? "Mavjud"
+                  : skin.status === "pending"
+                  ? "Kutilmoqda"
+                  : skin.status === "sold"
+                  ? "Sotilgan"
+                  : "Bekor qilingan"}
+              </Badge>
+            </div>
+            <div className="flex flex-col gap-1 w-full mt-4">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">ClassID:</span>
+                <span className="font-medium">{skin.classid}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500">InstanceID:</span>
+                <span className="font-medium">{skin.instanceid}</span>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+      {/* Sticky buy button */}
+      <div className="fixed bottom-0 left-0 w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 p-4 z-50 flex justify-center">
+        <Button className="w-full max-w-sm font-bold text-white bg-green-600 hover:bg-green-700 text-lg py-4 rounded-xl shadow-xl">
+          Sotib olish
+        </Button>
+      </div>
     </div>
   );
 }
