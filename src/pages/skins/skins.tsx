@@ -18,6 +18,7 @@ import { userService } from "@/services/user.service";
 import { useSkinsStore } from '@/stores/skins/skins.store';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 
 export default function Skins() {
   const [selectedSkin, setSelectedSkin] = useState<ISkin | null>(null);
@@ -165,16 +166,16 @@ export default function Skins() {
                   </div>
                   <div className="flex items-center gap-2 mt-3">
                     <span className="text-sm">Telegram kanal topida soat soni:</span>
-                    <select
-                      id="adHours"
-                      value={adHours}
-                      onChange={e => setAdHours(Number(e.target.value))}
-                      className="border rounded px-2 py-1 text-sm"
-                    >
-                      {Array.from({ length: 25 }, (_, i) => (
-                        <option key={i} value={i}>{i} soat</option>
-                      ))}
-                    </select>
+                    <Select value={String(adHours)} onValueChange={v => setAdHours(Number(v))}>
+                      <SelectTrigger className="w-32">
+                        <SelectValue placeholder="Soat tanlang" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 25 }, (_, i) => (
+                          <SelectItem key={i} value={String(i)}>{i} soat</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="text-xs text-blue-600 bg-blue-50 rounded px-2 py-1 mt-2">
                     Agar Telegram kanalimizda reklama xohlasangiz, soat sonini tanlang. Har 1 soat uchun 1000 tilav olinadi. Minimal telegram reklama narxi 19999 tilav. 0 soat tanlansa, post qilinmaydi.<br />
