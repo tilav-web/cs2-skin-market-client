@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { ISkin } from "@/interfaces/skin.interface";
 import { skinService } from "@/services/skin.service";
-import { Badge } from "@/components/ui/badge";
+import coinMain from "@/assets/coin-main.png";
 
 export default function BuySkinPage() {
   const { id } = useParams<{ id: string }>();
@@ -31,6 +31,23 @@ export default function BuySkinPage() {
     telegramPostUrl = `https://t.me/c/${skin.message_id.replace("-100", "")}`;
   }
 
+  // Placeholder values for table (replace with real data if available)
+  const owner = (
+    <span className="flex items-center gap-2">
+      <img src="https://avatars.githubusercontent.com/u/583231?v=4" alt="Tilav" className="w-6 h-6 rounded-full" />
+      Tilav
+    </span>
+  );
+  const yirtilish = "Field-Tested";
+  const nadir = "Classified";
+  const statTrak = "—";
+  const narx = (
+    <span className="flex items-center gap-1 font-semibold">
+      {skin.price.toLocaleString()} <img src={coinMain} alt="Tilav Coin" className="w-4 h-4 inline-block" />
+    </span>
+  );
+  const holat = skin.status === "sold" ? "sotilgan" : skin.status === "pending" ? "kutilmoqda" : skin.status === "available" ? "mavjud" : "bekor qilingan";
+
   return (
     <div className="absolute top-0 left-0 h-full w-full flex flex-col bg-gradient-to-b from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
       {/* Image section */}
@@ -45,55 +62,42 @@ export default function BuySkinPage() {
       {/* Info section */}
       <div className="flex-1 flex flex-col items-center px-4 pt-4 pb-32 w-full">
         <Card className="w-full max-w-sm mx-auto flex flex-col items-center gap-4 p-5 shadow-lg rounded-2xl bg-white/90 dark:bg-slate-900/90">
-          {/* Title and price */}
-          <div className="w-full flex flex-col items-center gap-1">
-            <div className="font-bold text-xl text-center break-words leading-tight mb-1">
+          {/* Title */}
+          <div className="w-full flex flex-col items-center gap-1 mb-2">
+            <div className="font-bold text-xl text-center break-words leading-tight mb-2">
               {skin.market_hash_name}
             </div>
-            <div className="text-green-600 dark:text-green-400 font-extrabold text-2xl mb-2">
-              {skin.price.toLocaleString()} <span className="text-base font-semibold">tilav</span>
-            </div>
           </div>
-          {/* Status and badges */}
-          <div className="flex flex-wrap gap-2 justify-center w-full mb-2">
-            <Badge className={
-              skin.status === "available"
-                ? "bg-green-600 text-white px-3 py-1 text-xs rounded-full"
-                : skin.status === "pending"
-                ? "bg-yellow-600 text-white px-3 py-1 text-xs rounded-full"
-                : skin.status === "sold"
-                ? "bg-gray-600 text-white px-3 py-1 text-xs rounded-full"
-                : "bg-red-600 text-white px-3 py-1 text-xs rounded-full"
-            }>
-              {skin.status === "available"
-                ? "Mavjud"
-                : skin.status === "pending"
-                ? "Kutilmoqda"
-                : skin.status === "sold"
-                ? "Sotilgan"
-                : "Bekor qilingan"}
-            </Badge>
-            {skin.tradable ? (
-              <Badge className="bg-blue-500 text-white px-3 py-1 text-xs rounded-full">Tradable</Badge>
-            ) : (
-              <Badge className="bg-red-500 text-white px-3 py-1 text-xs rounded-full">Sotib bo'lmaydi</Badge>
-            )}
-            {skin.advertising && (
-              <Badge className="bg-yellow-500 text-white px-3 py-1 text-xs rounded-full">Reklama</Badge>
-            )}
-          </div>
-          {/* Divider */}
-          <div className="w-full border-t border-slate-200 dark:border-slate-700 my-2" />
-          {/* Details */}
-          <div className="w-full flex flex-col gap-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-500">Class ID:</span>
-              <span className="font-medium text-gray-900 dark:text-gray-100">{skin.classid}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Instance ID:</span>
-              <span className="font-medium text-gray-900 dark:text-gray-100">{skin.instanceid}</span>
-            </div>
+          {/* Table */}
+          <div className="w-full">
+            <table className="w-full text-sm rounded-xl overflow-hidden bg-black/80 dark:bg-black/90 text-white">
+              <tbody>
+                <tr className="border-b border-gray-700">
+                  <td className="py-2 px-3 font-medium">Egasi</td>
+                  <td className="py-2 px-3 text-right">{owner}</td>
+                </tr>
+                <tr className="border-b border-gray-700">
+                  <td className="py-2 px-3 font-medium">Yirtilish</td>
+                  <td className="py-2 px-3 text-right">{yirtilish}</td>
+                </tr>
+                <tr className="border-b border-gray-700">
+                  <td className="py-2 px-3 font-medium">Nadir</td>
+                  <td className="py-2 px-3 text-right">{nadir}</td>
+                </tr>
+                <tr className="border-b border-gray-700">
+                  <td className="py-2 px-3 font-medium">StatTrak</td>
+                  <td className="py-2 px-3 text-right">{statTrak}</td>
+                </tr>
+                <tr className="border-b border-gray-700">
+                  <td className="py-2 px-3 font-medium">Narx</td>
+                  <td className="py-2 px-3 text-right">{narx}</td>
+                </tr>
+                <tr>
+                  <td className="py-2 px-3 font-medium">Holat</td>
+                  <td className="py-2 px-3 text-right">{holat}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           {/* Telegram post link */}
           {telegramPostUrl && (
