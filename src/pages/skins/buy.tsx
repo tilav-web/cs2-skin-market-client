@@ -60,7 +60,7 @@ export default function BuySkinPage() {
         />
       </div>
       {/* Info section */}
-      <div className="flex-1 flex flex-col items-center px-4 pt-4 pb-32 w-full">
+      <div className="flex-1 flex flex-col items-center px-4 pt-4 mb-38 w-full">
         <Card className="w-full max-w-sm mx-auto flex flex-col items-center gap-4 p-5 shadow-lg rounded-2xl bg-white/90 dark:bg-slate-900/90">
           {/* Title */}
           <div className="w-full flex flex-col items-center gap-1 mb-2">
@@ -73,21 +73,19 @@ export default function BuySkinPage() {
             <table className="w-full text-sm rounded-xl overflow-hidden bg-black/80 dark:bg-black/90 text-white">
               <div>
                 <div className="border-b border-gray-700 flex items-center justify-between">
-                  <p className="py-2 px-3 font-medium flex-1">Egasi</p>
-                  <p className="py-2 px-3 text-right">
-                    <span className="flex items-center gap-2">
-                      <img
-                        src="https://avatars.githubusercontent.com/u/583231?v=4"
-                        alt="Tilav"
-                        className="w-6 h-6 rounded-full"
-                      />
-                      Tilav
-                    </span>
+                  <p className="py-2 px-3 font-medium">Egasi</p>
+                  <p className="py-2 px-3 flex items-center gap-1">
+                    <img
+                      src="https://avatars.githubusercontent.com/u/583231?v=4"
+                      alt="Tilav"
+                      className="w-6 h-6 rounded-full"
+                    />
+                    Tilav
                   </p>
                 </div>
                 <div className="border-b border-gray-700 flex items-center justify-between">
                   <p className="py-2 px-3 font-medium">Narx</p>
-                  <p>
+                  <p className="py-2 px-3 flex items-center gap-1">
                     <img
                       src={coinMain}
                       alt="Tilav Coin"
@@ -96,12 +94,14 @@ export default function BuySkinPage() {
                     {skin.price.toLocaleString()}{" "}
                   </p>
                 </div>
-                <div>
-                  <p className="py-2 px-3 font-medium flex-1">Holati</p>
+                <div className="border-b border-gray-700 flex items-center justify-between">
+                  <p className="py-2 px-3 font-medium">Holati</p>
                   <p>{holat}</p>
                 </div>
-                <div>
-                  <p className="py-2 px-3 font-medium flex-1">Telegram channel</p>
+                <div className="border-b border-gray-700 flex items-center justify-between">
+                  <p className="py-2 px-3 font-medium">
+                    Telegram channel
+                  </p>
                   <Link to={telegramPostUrl ?? ""}>post</Link>
                 </div>
               </div>
