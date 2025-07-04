@@ -25,17 +25,28 @@ export default function BuySkinPage() {
   if (loading) return <div className="text-center mt-10">Yuklanmoqda...</div>;
   if (error || !skin) return <div className="text-center mt-10 text-red-500">{error || "Skin topilmadi"}</div>;
 
+  // Telegram post link if message_id exists
+  let telegramPostUrl: string | null = null;
+  if (skin.message_id) {
+    telegramPostUrl = `https://t.me/c/${skin.message_id.replace("-100", "")}`;
+  }
+
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
-      <div className="flex-1 flex flex-col items-center px-4 pt-6 pb-28">
-        <Card className="w-full max-w-sm mx-auto flex flex-col items-center gap-4 p-4 shadow-lg rounded-2xl">
-          <img
-            src={skin.icon_url}
-            alt={skin.market_hash_name}
-            className="w-40 h-40 object-contain rounded-xl border bg-white dark:bg-slate-900 shadow"
-          />
+    <div className="absolute top-0 left-0 h-full w-full flex flex-col bg-gradient-to-b from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
+      {/* Image section */}
+      <div className="flex-shrink-0 w-full flex justify-center items-end" style={{height: '42vh', minHeight: 220, maxHeight: 350}}>
+        <img
+          src={skin.icon_url}
+          alt={skin.market_hash_name}
+          className="object-contain h-full max-h-full w-auto drop-shadow-xl"
+          style={{maxWidth: '90vw'}}
+        />
+      </div>
+      {/* Info section */}
+      <div className="flex-1 flex flex-col items-center px-4 pt-4 pb-32 w-full">
+        <Card className="w-full max-w-sm mx-auto flex flex-col items-center gap-4 p-4 shadow-lg rounded-2xl bg-white/90 dark:bg-slate-900/90">
           <div className="w-full flex flex-col items-center gap-2">
-            <div className="font-bold text-lg text-center break-words leading-tight">
+            <div className="font-bold text-xl text-center break-words leading-tight">
               {skin.market_hash_name}
             </div>
             <div className="flex flex-wrap gap-2 justify-center mt-1">
@@ -78,6 +89,16 @@ export default function BuySkinPage() {
                 <span className="font-medium">{skin.instanceid}</span>
               </div>
             </div>
+            {telegramPostUrl && (
+              <a
+                href={telegramPostUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 w-full text-center text-blue-600 underline text-sm font-medium hover:text-blue-800 transition"
+              >
+                Telegram postini ko‘rish
+              </a>
+            )}
           </div>
         </Card>
       </div>
