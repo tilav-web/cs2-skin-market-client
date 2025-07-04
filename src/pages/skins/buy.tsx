@@ -50,7 +50,7 @@ export default function BuySkinPage() {
       {/* Image section */}
       <div
         className="flex-shrink-0 w-full flex justify-center items-end"
-        style={{ height: "40vh", minHeight: 220, maxHeight: 350 }}
+        style={{ height: "35vh", minHeight: 220, maxHeight: 350 }}
       >
         <img
           src={skin.icon_url}
