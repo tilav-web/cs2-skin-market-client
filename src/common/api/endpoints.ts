@@ -1,3 +1,4 @@
 export const endpoints = {
-    USERS: '/users'
-}
+    USERS: '/users',
+    SKINS: '/skins',
+};

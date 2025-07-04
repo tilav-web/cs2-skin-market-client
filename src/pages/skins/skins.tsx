@@ -191,7 +191,7 @@ export default function Skins() {
                   </div>
                   <div className="flex items-center gap-2 mt-3">
                     <span className="text-sm">
-                      Telegram kanal topida soat soni:
+                      Telegram kanal topida:
                     </span>
                     <Select
                       value={String(adHours)}

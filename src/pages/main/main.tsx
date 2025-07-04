@@ -7,63 +7,23 @@ import coinMain from "@/assets/coin-main.png";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatBalance } from "@/lib/utils";
-
-
-const ownedSkins: ISkin[] = [
-  {
-    id: 1,
-    weapon: "AK-47",
-    name: "Redline",
-    price: 1550,
-    image:
-      "https://cdn.csgoskins.gg/public/uih/weapons/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbnMvYmFzZV93ZWFwb25zL3dlYXBvbl9hazQ3LmQwMGQxZGZhMDk2MjFjMjk3Njk2ZTM1M2Y0MTMzMzBjOTRlZDUwOTAucG5n/auto/auto/85/notrim/06be7f9eb59aeebc19509c82a43a82b5.webp",
-    rarity: "Classified",
-    wear: "Field-Tested",
-    statTrak: false,
-  },
-];
-
-const soldSkins: ISkin[] = [
-  {
-    id: 2,
-    weapon: "AWP",
-    name: "Asiimov",
-    price: 7500,
-    image:
-      "https://cdn.csgoskins.gg/public/uih/weapons/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbnMvYmFzZV93ZWFwb25zL3dlYXBvbl9hazQ3LmQwMGQxZGZhMDk2MjFjMjk3Njk2ZTM1M2Y0MTMzMzBjOTRlZDUwOTAucG5n/auto/auto/85/notrim/06be7f9eb59aeebc19509c82a43a82b5.webp",
-    rarity: "Covert",
-    wear: "Battle-Scarred",
-    statTrak: false,
-  },
-];
-
-const boughtSkins: ISkin[] = [
-  {
-    id: 3,
-    weapon: "StatTrak™ M4A4",
-    name: "Howl",
-    price: 350000,
-    image:
-      "https://cdn.csgoskins.gg/public/uih/weapons/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbnMvYmFzZV93ZWFwb25zL3dlYXBvbl9hazQ3LmQwMGQxZGZhMDk2MjFjMjk3Njk2ZTM1M2Y0MTMzMzBjOTRlZDUwOTAucG5n/auto/auto/85/notrim/06be7f9eb59aeebc19509c82a43a82b5.webp",
-    rarity: "Contraband",
-    wear: "Factory New",
-    statTrak: true,
-  },
-  {
-    id: 4,
-    weapon: "Glock-18",
-    name: "Fade",
-    price: 1200000000,
-    image:
-      "https://cdn.csgoskins.gg/public/uih/weapons/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbnMvYmFzZV93ZWFwb25zL3dlYXBvbl9hazQ3LmQwMGQxZGZhMDk2MjFjMjk3Njk2ZTM1M2Y0MTMzMzBjOTRlZDUwOTAucG5n/auto/auto/85/notrim/06be7f9eb59aeebc19509c82a43a82b5.webp",
-    rarity: "Mil-Spec",
-    wear: "Minimal Wear",
-    statTrak: false,
-  },
-];
+import { useEffect, useState } from 'react';
+import { skinService } from '@/services/skin.service';
 
 export default function MainPage() {
   const user = useUserStore((state) => state.user);
+  const [skins, setSkins] = useState<ISkin[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    skinService.getAdvertisingPendingSkins()
+      .then(setSkins)
+      .catch(() => setError('Skinlarni yuklashda xatolik'))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <div>
       {/* Coin image center */}
@@ -84,8 +44,13 @@ export default function MainPage() {
         </Card>
       </div>
       <div className="grid grid-cols-2 gap-2">
-        {[...ownedSkins, ...soldSkins, ...boughtSkins].map((skin) => (
-          <div key={skin.id} className="relative">
+        {loading && <div className="col-span-2 text-center">Yuklanmoqda...</div>}
+        {error && <div className="col-span-2 text-center text-red-500">{error}</div>}
+        {!loading && !error && skins.length === 0 && (
+          <div className="col-span-2 text-center">Hozircha reklamaga qo'yilgan skinlar yo'q</div>
+        )}
+        {skins.map((skin) => (
+          <div key={skin.assetid} className="relative">
             <Badge className="absolute left-2 top-2 z-10 text-white font-bold">reklama</Badge>
             <SkinCard skin={skin} />
           </div>
