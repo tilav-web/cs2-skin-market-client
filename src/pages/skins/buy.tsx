@@ -60,7 +60,7 @@ export default function BuySkinPage() {
         />
       </div>
       {/* Info section */}
-      <div className="flex-1 flex flex-col items-center px-4 pt-4 mb-38 w-full">
+      <div className="flex-1 flex flex-col items-center px-4 pt-4 mb-44 w-full">
         <Card className="w-full max-w-sm mx-auto flex flex-col items-center gap-4 p-5 shadow-lg rounded-2xl bg-white/90 dark:bg-slate-900/90">
           {/* Title */}
           <div className="w-full flex flex-col items-center gap-1 mb-2">
@@ -96,13 +96,13 @@ export default function BuySkinPage() {
                 </div>
                 <div className="border-b border-gray-700 flex items-center justify-between">
                   <p className="py-2 px-3 font-medium">Holati</p>
-                  <p>{holat}</p>
+                  <p className="py-2 px-3">{holat}</p>
                 </div>
                 <div className="border-b border-gray-700 flex items-center justify-between">
                   <p className="py-2 px-3 font-medium">
                     Telegram channel
                   </p>
-                  <Link to={telegramPostUrl ?? ""}>post</Link>
+                  <Link className="py-2 px-3" to={telegramPostUrl ?? ""}>post</Link>
                 </div>
               </div>
             </table>
