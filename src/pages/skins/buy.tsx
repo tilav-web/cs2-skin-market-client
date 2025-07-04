@@ -16,14 +16,20 @@ export default function BuySkinPage() {
     if (!id) return;
     setLoading(true);
     setError(null);
-    skinService.getSkinById(id)
+    skinService
+      .getSkinById(id)
       .then(setSkin)
       .catch(() => setError("Skin topilmadi"))
       .finally(() => setLoading(false));
   }, [id]);
 
   if (loading) return <div className="text-center mt-10">Yuklanmoqda...</div>;
-  if (error || !skin) return <div className="text-center mt-10 text-red-500">{error || "Skin topilmadi"}</div>;
+  if (error || !skin)
+    return (
+      <div className="text-center mt-10 text-red-500">
+        {error || "Skin topilmadi"}
+      </div>
+    );
 
   // Telegram post link if message_id exists
   let telegramPostUrl: string | null = null;
@@ -31,32 +37,33 @@ export default function BuySkinPage() {
     telegramPostUrl = `https://t.me/c/${skin.message_id.replace("-100", "")}`;
   }
 
-  // Placeholder values for table (replace with real data if available)
-  const owner = (
-    <span className="flex items-center gap-2">
-      <img src="https://avatars.githubusercontent.com/u/583231?v=4" alt="Tilav" className="w-6 h-6 rounded-full" />
-      Tilav
-    </span>
-  );
-  const yirtilish = "Field-Tested";
-  const nadir = "Classified";
-  const statTrak = "—";
   const narx = (
     <span className="flex items-center gap-1 font-semibold">
-      {skin.price.toLocaleString()} <img src={coinMain} alt="Tilav Coin" className="w-4 h-4 inline-block" />
+      <img src={coinMain} alt="Tilav Coin" className="w-4 h-4 inline-block" />
+      {skin.price.toLocaleString()}{" "}
     </span>
   );
-  const holat = skin.status === "sold" ? "sotilgan" : skin.status === "pending" ? "kutilmoqda" : skin.status === "available" ? "mavjud" : "bekor qilingan";
+  const holat =
+    skin.status === "sold"
+      ? "sotilgan"
+      : skin.status === "pending"
+      ? "kutilmoqda"
+      : skin.status === "available"
+      ? "mavjud"
+      : "bekor qilingan";
 
   return (
     <div className="absolute top-0 left-0 h-full w-full flex flex-col bg-gradient-to-b from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
       {/* Image section */}
-      <div className="flex-shrink-0 w-full flex justify-center items-end" style={{height: '42vh', minHeight: 220, maxHeight: 350}}>
+      <div
+        className="flex-shrink-0 w-full flex justify-center items-end"
+        style={{ height: "42vh", minHeight: 220, maxHeight: 350 }}
+      >
         <img
           src={skin.icon_url}
           alt={skin.market_hash_name}
           className="object-contain h-full max-h-full w-auto drop-shadow-xl"
-          style={{maxWidth: '90vw'}}
+          style={{ maxWidth: "90vw" }}
         />
       </div>
       {/* Info section */}
@@ -71,32 +78,31 @@ export default function BuySkinPage() {
           {/* Table */}
           <div className="w-full">
             <table className="w-full text-sm rounded-xl overflow-hidden bg-black/80 dark:bg-black/90 text-white">
-              <tbody>
-                <tr className="border-b border-gray-700">
-                  <td className="py-2 px-3 font-medium">Egasi</td>
-                  <td className="py-2 px-3 text-right">{owner}</td>
-                </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="py-2 px-3 font-medium">Yirtilish</td>
-                  <td className="py-2 px-3 text-right">{yirtilish}</td>
-                </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="py-2 px-3 font-medium">Nadir</td>
-                  <td className="py-2 px-3 text-right">{nadir}</td>
-                </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="py-2 px-3 font-medium">StatTrak</td>
-                  <td className="py-2 px-3 text-right">{statTrak}</td>
-                </tr>
-                <tr className="border-b border-gray-700">
-                  <td className="py-2 px-3 font-medium">Narx</td>
-                  <td className="py-2 px-3 text-right">{narx}</td>
-                </tr>
-                <tr>
-                  <td className="py-2 px-3 font-medium">Holat</td>
-                  <td className="py-2 px-3 text-right">{holat}</td>
-                </tr>
-              </tbody>
+              <div>
+                <div className="border-b border-gray-700 flex items-center justify-between">
+                  <p className="py-2 px-3 font-medium flex-1">Egasi</p>
+                  <p className="py-2 px-3 text-right">
+                    <span className="flex items-center gap-2">
+                      <img
+                        src="https://avatars.githubusercontent.com/u/583231?v=4"
+                        alt="Tilav"
+                        className="w-6 h-6 rounded-full"
+                      />
+                      Tilav
+                    </span>
+                  </p>
+                </div>
+                <div className="border-b border-gray-700 flex items-center justify-between">
+                  <p className="py-2 px-3 font-medium">Narx</p>
+                  <p className="py-2 px-3 text-right">{narx}</p>
+                </div>
+                <div>
+                  <p className="py-2 px-3 font-medium flex items-center justify-between">
+                    Holat
+                  </p>
+                  <p className="py-2 px-3 text-right">{holat}</p>
+                </div>
+              </div>
             </table>
           </div>
           {/* Telegram post link */}
