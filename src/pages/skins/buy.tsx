@@ -3,34 +3,26 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { ISkin } from "@/interfaces/skin.interface";
-
-// TODO: Replace with real API call
-const mockSkins: ISkin[] = [
-  {
-    assetid: "1",
-    classid: "1",
-    instanceid: "1",
-    market_hash_name: "AK-47 | Redline (Field-Tested)",
-    icon_url: "https://community.akamai.steamstatic.com/economy/image/class/730/302188936/200fx200f",
-    tradable: true,
-    price: 12345,
-  },
-];
+import { skinService } from "@/services/skin.service";
 
 export default function BuySkinPage() {
-  const { assetid } = useParams<{ assetid: string }>();
+  const { id } = useParams<{ id: string }>();
   const [skin, setSkin] = useState<ISkin | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // TODO: Replace with real API call
-    const found = mockSkins.find((s) => s.assetid === assetid);
-    setSkin(found || null);
-    setLoading(false);
-  }, [assetid]);
+    if (!id) return;
+    setLoading(true);
+    setError(null);
+    skinService.getSkinById(id)
+      .then(setSkin)
+      .catch(() => setError("Skin topilmadi"))
+      .finally(() => setLoading(false));
+  }, [id]);
 
   if (loading) return <div className="text-center mt-10">Yuklanmoqda...</div>;
-  if (!skin) return <div className="text-center mt-10 text-red-500">Skin topilmadi</div>;
+  if (error || !skin) return <div className="text-center mt-10 text-red-500">{error || "Skin topilmadi"}</div>;
 
   return (
     <div className="flex flex-col items-center mt-8">

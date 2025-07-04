@@ -34,7 +34,7 @@ const router = createBrowserRouter([
         element: <Referrals />,
       },
       {
-        path: "/skins/buy/:assetid",
+        path: "/skins/buy/:id",
         element: <BuySkinPage />,
       },
       {

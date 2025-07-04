@@ -8,6 +8,11 @@ class SkinService {
     });
     return res.data;
   }
+
+  async getSkinById(id: string) {
+    const res = await privateInstance.get(`${endpoints.SKINS}/public/${id}`);
+    return res.data;
+  }
 }
 
 export const skinService = new SkinService()
