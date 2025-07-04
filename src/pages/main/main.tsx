@@ -15,14 +15,19 @@ export default function MainPage() {
   const [skins, setSkins] = useState<ISkin[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     setLoading(true);
-    skinService.getAdvertisingPendingSkins()
-      .then(setSkins)
+    skinService.getAdvertisingPendingSkins(page, 20)
+      .then((res) => {
+        setSkins(res.items);
+        setTotalPages(res.totalPages);
+      })
       .catch(() => setError('Skinlarni yuklashda xatolik'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [page]);
 
   return (
     <div>
@@ -55,6 +60,24 @@ export default function MainPage() {
             <SkinCard skin={skin} />
           </div>
         ))}
+      </div>
+      {/* Pagination controls */}
+      <div className="flex justify-center mt-4 gap-2">
+        <Button
+          variant="outline"
+          disabled={page <= 1 || loading}
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+        >
+          Oldingi
+        </Button>
+        <span className="flex items-center px-2">{page} / {totalPages}</span>
+        <Button
+          variant="outline"
+          disabled={page >= totalPages || loading}
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+        >
+          Keyingi
+        </Button>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import type { ISkin } from "@/interfaces/skin.interface";
+import { Link } from "react-router-dom";
 
 interface SkinCardProps {
   skin: ISkin;
@@ -42,7 +43,7 @@ export const SkinCard = ({
         </span>
       )}
     </div>
-    {/* Sell Button */}
+    {/* Sell/Buy Button */}
     <div className="mt-3">
       {variant === "sell" && skin.tradable && (
         <Button
@@ -51,6 +52,16 @@ export const SkinCard = ({
           disabled={!skin.tradable}
         >
           Sotish
+        </Button>
+      )}
+      {variant === "buy" && skin.tradable && typeof skin.price === 'number' && (
+        <Button
+          asChild
+          className="w-full bg-green-500 text-white border border-green-600 hover:bg-green-600 h-10 rounded-xl font-bold shadow dark:bg-green-700 dark:text-white dark:border-green-800 dark:hover:bg-green-800 mt-2"
+        >
+          <Link to={`/skins/buy/${skin.assetid}`}>
+            {skin.price.toLocaleString()} tilav
+          </Link>
         </Button>
       )}
     </div>
