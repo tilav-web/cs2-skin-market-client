@@ -12,13 +12,14 @@ class UserService {
     }
   }
 
-  async findMySkins() {
+  async findMySkins(refresh: boolean = false) {
     try {
-      const res = await privateInstance.get(`${endpoints.USERS}/skins`)
-      return res.data
+      const url = refresh ? `${endpoints.USERS}/skins?refresh=true` : `${endpoints.USERS}/skins`;
+      const res = await privateInstance.get(url);
+      return res.data;
     } catch (error) {
       console.error(error);
-      throw error
+      throw error;
     }
   }
 

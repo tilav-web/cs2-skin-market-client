@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { SkinCard } from "@/components/common/skin-card";
 import type { ISkin } from "@/interfaces/skin.interface";
 import {
@@ -33,6 +33,19 @@ import {
 } from "@/components/ui/tooltip";
 import { RefreshCw } from "lucide-react"; // Refresh icon
 
+// Cooldown constants
+const LAST_REFRESH_TIMESTAMP_KEY = "skins_last_refresh";
+const COOLDOWN_DURATION_MS = 60 * 60 * 1000; // 1 soat millisekundlarda
+
+function formatTime(ms: number) {
+  const totalSeconds = Math.ceil(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return minutes > 0
+    ? `${minutes}m ${seconds < 10 ? "0" : ""}${seconds}s`
+    : `${seconds}s`;
+}
+
 export default function Skins() {
   const [selectedSkin, setSelectedSkin] = useState<ISkin | null>(null);
   const [price, setPrice] = useState(0);
@@ -44,26 +57,70 @@ export default function Skins() {
   const commission = isAdvertisement ? price * 0.07 : price * 0.05;
 
   const { skins, loading, setSkins, setLoading } = useSkinsStore();
+  const [isCooldownActive, setIsCooldownActive] = useState(false);
+  const [remainingCooldown, setRemainingCooldown] = useState(0);
+  const cooldownIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const fetchSkins = useCallback(async () => {
-    setLoading(true);
-    setFetchError(null);
-    try {
-      const data = await userService.findMySkins();
-      setSkins(data);
-    } catch (error: unknown) {
-      setFetchError(
-        "Hozircha skinlarni olish imkoni yo'q. Bu ko'pincha Steam API so'rovlar ko'pligi sababli vaqtincha cheklov qo'yilgani uchun yuz beradi. Iltimos, birozdan so'ng qayta urinib ko'ring."
-      );
-      console.error(error);
-    } finally {
-      setLoading(false);
+  const checkCooldown = useCallback(() => {
+    const last = localStorage.getItem(LAST_REFRESH_TIMESTAMP_KEY);
+    if (last) {
+      const lastTime = parseInt(last, 10);
+      const now = Date.now();
+      const diff = now - lastTime;
+      if (diff < COOLDOWN_DURATION_MS) {
+        setIsCooldownActive(true);
+        setRemainingCooldown(COOLDOWN_DURATION_MS - diff);
+        return true;
+      }
     }
-  }, [setSkins, setLoading]);
+    setIsCooldownActive(false);
+    setRemainingCooldown(0);
+    return false;
+  }, []);
+
+  useEffect(() => {
+    checkCooldown();
+    if (cooldownIntervalRef.current) clearInterval(cooldownIntervalRef.current);
+    cooldownIntervalRef.current = setInterval(() => {
+      checkCooldown();
+    }, 1000);
+    return () => {
+      if (cooldownIntervalRef.current) clearInterval(cooldownIntervalRef.current);
+    };
+  }, [checkCooldown]);
+
+  const fetchSkins = useCallback(
+    async (refresh: boolean = false) => {
+      if (refresh && checkCooldown()) {
+        toast.error(
+          `Skinlarni yangilash uchun ${formatTime(remainingCooldown)} kuting.`
+        );
+        return;
+      }
+      if (refresh) {
+        localStorage.setItem(LAST_REFRESH_TIMESTAMP_KEY, Date.now().toString());
+        checkCooldown();
+      }
+      setLoading(true);
+      setFetchError(null);
+      try {
+        const data = await userService.findMySkins(refresh);
+        setSkins(data);
+      } catch (error: unknown) {
+        setFetchError(
+          "Hozircha skinlarni olish imkoni yo'q. Bu ko'pincha Steam API so'rovlar ko'pligi sababli vaqtincha cheklov qo'yilgani uchun yuz beradi. Iltimos, birozdan so'ng qayta urinib ko'ring."
+        );
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setSkins, setLoading, setFetchError, checkCooldown, remainingCooldown]
+  );
 
   useEffect(() => {
     if (skins.length === 0) {
-      fetchSkins();
+      fetchSkins(false);
     }
   }, [skins.length, fetchSkins]);
 
@@ -107,14 +164,18 @@ export default function Skins() {
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={fetchSkins}
-                  disabled={loading} // Disable button while loading
+                  onClick={() => fetchSkins(true)}
+                  disabled={loading || isCooldownActive}
                 >
                   <RefreshCw className={loading ? "animate-spin" : ""} />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Skinlarni yangilash</p>
+                <p>
+                  {isCooldownActive
+                    ? `Qayta yangilash uchun ${formatTime(remainingCooldown)} kuting.`
+                    : "Skinlarni yangilash"}
+                </p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
