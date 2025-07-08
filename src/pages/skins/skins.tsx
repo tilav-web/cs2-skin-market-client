@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { SkinCard } from "@/components/common/skin-card";
 import type { ISkin } from "@/interfaces/skin.interface";
 import {
@@ -25,6 +25,13 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { RefreshCw } from "lucide-react"; // Refresh icon
 
 export default function Skins() {
   const [selectedSkin, setSelectedSkin] = useState<ISkin | null>(null);
@@ -37,6 +44,28 @@ export default function Skins() {
   const commission = isAdvertisement ? price * 0.07 : price * 0.05;
 
   const { skins, loading, setSkins, setLoading } = useSkinsStore();
+
+  const fetchSkins = useCallback(async () => {
+    setLoading(true);
+    setFetchError(null);
+    try {
+      const data = await userService.findMySkins();
+      setSkins(data);
+    } catch (error: unknown) {
+      setFetchError(
+        "Hozircha skinlarni olish imkoni yo'q. Bu ko'pincha Steam API so'rovlar ko'pligi sababli vaqtincha cheklov qo'yilgani uchun yuz beradi. Iltimos, birozdan so'ng qayta urinib ko'ring."
+      );
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [setSkins, setLoading]);
+
+  useEffect(() => {
+    if (skins.length === 0) {
+      fetchSkins();
+    }
+  }, [skins.length, fetchSkins]);
 
   const handleSellClick = (skin: ISkin) => {
     setSelectedSkin(skin);
@@ -61,34 +90,35 @@ export default function Skins() {
     handleClose();
   };
 
-  useEffect(() => {
-    if (skins.length > 0) return;
-    setLoading(true);
-    setFetchError(null);
-    (async () => {
-      try {
-        const data = await userService.findMySkins();
-        setSkins(data);
-      } catch (error: unknown) {
-        setFetchError(
-          "Hozircha skinlarni olish imkoni yo'q. Bu ko'pincha Steam API so'rovlar ko'pligi sababli vaqtincha cheklov qo'yilgani uchun yuz beradi. Iltimos, birozdan so'ng qayta urinib ko'ring."
-        );
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [setSkins, setLoading, skins.length]);
-
   return (
     <div>
-      <div className="flex flex-col items-center mb-4">
+      <div className="flex flex-col items-center mb-4 relative"> {/* Added relative for positioning */}
         <img src={coinSub} alt="Tilav Coin" className="w-24 h-24" />
         <p className="font-bold text-xl mt-2">Tilav coin</p>
         <p className="text-center text-sm text-gray-500 px-4">
           Bu yerda siz o'z skinlaringizni sotishingiz mumkin. Barcha savdolar
           "tilav coin"da amalga oshiriladi. <strong>1 so'm = 1 tilav.</strong>
         </p>
+        {/* Refresh Button */}
+        <div className="absolute top-0 right-0 mt-2 mr-2"> {/* Positioned top-right */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={fetchSkins}
+                  disabled={loading} // Disable button while loading
+                >
+                  <RefreshCw className={loading ? "animate-spin" : ""} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Skinlarni yangilash</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
       {loading ? (
         <div className="flex justify-center items-center py-12 text-gray-400">
