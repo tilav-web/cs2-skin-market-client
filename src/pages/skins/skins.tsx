@@ -91,8 +91,8 @@ export default function Skins() {
   };
 
   return (
-    <div>
-      <div className="flex flex-col items-center mb-4 relative"> {/* Added relative for positioning */}
+    <div className="relative">
+      <div className="flex flex-col items-center mb-4"> {/* Added relative for positioning */}
         <img src={coinSub} alt="Tilav Coin" className="w-24 h-24" />
         <p className="font-bold text-xl mt-2">Tilav coin</p>
         <p className="text-center text-sm text-gray-500 px-4">
