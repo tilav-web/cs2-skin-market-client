@@ -1,25 +1,36 @@
 import { SkinCard } from "@/components/common/skin-card";
-import type { ISkin } from "@/interfaces/skin.interface";
 import { Badge } from "@/components/ui/badge";
 import { useUserStore } from "@/stores/auth/user.store";
 import coinMain from "@/assets/coin-main.png";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatBalance } from "@/lib/utils";
-import { useEffect, useRef } from 'react';
-import { skinService } from '@/services/skin.service';
-import { useAdvertisedSkinsStore } from '@/stores/advertised-skins/advertised-skins.store';
+import { useEffect, useRef, useCallback } from "react"; // useCallback ni import qilamiz
+import { skinService } from "@/services/skin.service";
+import { useAdvertisedSkinsStore } from "@/stores/advertised-skins/advertised-skins.store";
 
 export default function MainPage() {
   const user = useUserStore((state) => state.user);
-  const { skins, loading, page, totalPages, hasMore, setSkins, addSkins, setLoading, setPage, reset } = useAdvertisedSkinsStore();
+  const {
+    skins,
+    loading,
+    page,
+    hasMore,
+    setSkins,
+    addSkins,
+    setLoading,
+    setPage,
+    reset,
+  } = useAdvertisedSkinsStore(); // totalPages ni olib tashladik
   const observerTarget = useRef(null);
 
-  const fetchAdvertisedSkins = async () => {
+  const fetchAdvertisedSkins = useCallback(async () => {
     if (loading || !hasMore) return;
     setLoading(true);
     try {
       const res = await skinService.getAdvertisedSkins(page);
+      console.log(res);
+      
       if (page === 1) {
         setSkins(res.items, res.totalPages);
       } else {
@@ -31,12 +42,12 @@ export default function MainPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [loading, hasMore, page, setSkins, addSkins, setLoading, setPage]); // Dependencies
 
   useEffect(() => {
     reset(); // Komponent yuklanganda store'ni tozalash
     fetchAdvertisedSkins();
-  }, []);
+  }, [reset, fetchAdvertisedSkins]); // Dependencies
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -65,7 +76,11 @@ export default function MainPage() {
       <div className="flex flex-col items-center mb-2">
         <img src={coinMain} alt="Tilav Coin" className="w-26 h-26" />
         <p className="font-bold text-xl">Tilav coin</p>
-        <p className="text-center text-sm text-gray-500">Tilav coin yordamida skin-lar sotib oling.<br/><strong>1 so'm = 1 tilav.</strong></p>
+        <p className="text-center text-sm text-gray-500">
+          Tilav coin yordamida skin-lar sotib oling.
+          <br />
+          <strong>1 so'm = 1 tilav.</strong>
+        </p>
       </div>
       {/* Balance card */}
       <div className="flex justify-center mb-6">
@@ -75,13 +90,17 @@ export default function MainPage() {
             <img src={coinMain} alt="Tilav Coin" className="w-6 h-6" />
             {formatBalance(user?.balance ?? 0)}
           </span>
-          <Button className="mt-2 w-full text-white font-bold">Hisobni to'ldirish</Button>
+          <Button className="mt-2 w-full text-white font-bold">
+            Hisobni to'ldirish
+          </Button>
         </Card>
       </div>
       <div className="grid grid-cols-2 gap-2">
         {skins.map((skin) => (
           <div key={skin.assetid} className="relative">
-            <Badge className="absolute left-2 top-2 z-10 text-white font-bold">reklama</Badge>
+            <Badge className="absolute left-2 top-2 z-10 text-white font-bold">
+              reklama
+            </Badge>
             <SkinCard skin={skin} />
           </div>
         ))}
@@ -93,9 +112,9 @@ export default function MainPage() {
             Reklama bo'limidagi barcha skinlar ko'rsatildi.
           </div>
         )}
-        <div ref={observerTarget} className="col-span-2 h-1"></div> {/* Observer target */}
+        <div ref={observerTarget} className="col-span-2 h-1"></div>{" "}
+        {/* Observer target */}
       </div>
     </div>
   );
 }
-
