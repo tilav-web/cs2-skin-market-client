@@ -1,7 +1,20 @@
 import { privateInstance } from '../common/api/client-api';
 import { endpoints } from '../common/api/endpoints';
+import type { ISkin } from '@/interfaces/skin.interface';
+
+// Serverdagi CreateSkinDto ga mos keladigan tip
+type CreateSkinPayload = Omit<ISkin, 'user' | '_id'> & {
+  description?: string;
+  advertising?: boolean;
+  advertising_hours?: number;
+};
 
 class SkinService {
+  async create(skinData: CreateSkinPayload) {
+    const res = await privateInstance.post(endpoints.SKINS, skinData);
+    return res.data;
+  }
+
   async getAdvertisingPendingSkins(page = 1, limit = 20) {
     const res = await privateInstance.get(`${endpoints.SKINS}/advertising-pending`, {
       params: { page, limit },
@@ -15,4 +28,4 @@ class SkinService {
   }
 }
 
-export const skinService = new SkinService()
+export const skinService = new SkinService();

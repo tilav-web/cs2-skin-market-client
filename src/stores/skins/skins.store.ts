@@ -6,6 +6,7 @@ interface SkinsStore {
   loading: boolean;
   setSkins: (skins: ISkin[]) => void;
   setLoading: (loading: boolean) => void;
+  removeSkin: (assetid: string) => void;
   clearSkins: () => void;
 }
 
@@ -14,5 +15,9 @@ export const useSkinsStore = create<SkinsStore>((set) => ({
   loading: false,
   setSkins: (skins) => set({ skins }),
   setLoading: (loading) => set({ loading }),
+  removeSkin: (assetid) =>
+    set((state) => ({
+      skins: state.skins.filter((skin) => skin.assetid !== assetid),
+    })),
   clearSkins: () => set({ skins: [] }),
 }));

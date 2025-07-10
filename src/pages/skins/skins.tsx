@@ -12,9 +12,11 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea"; // Textarea ni import qilamiz
 import coinSub from "@/assets/coin-sub.png";
 import { toast } from "sonner";
 import { userService } from "@/services/user.service";
+import { skinService } from "@/services/skin.service"; // skinService ni import qilamiz
 import { useSkinsStore } from "@/stores/skins/skins.store";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -49,14 +51,16 @@ function formatTime(ms: number) {
 export default function Skins() {
   const [selectedSkin, setSelectedSkin] = useState<ISkin | null>(null);
   const [price, setPrice] = useState(0);
-  const [isAdvertisement, setIsAdvertisement] = useState(false); // Reklama bo'limi uchun
-  const [adHours, setAdHours] = useState(0); // Telegram uchun soat (0 = post qilinmaydi)
+  const [description, setDescription] = useState(""); // Description uchun state
+  const [isAdvertisement, setIsAdvertisement] = useState(false);
+  const [adHours, setAdHours] = useState(0);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  // Reklama narxi va komissiya hisoblash
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const telegramPrice = adHours > 0 ? adHours * 1000 : 0;
   const commission = isAdvertisement ? price * 0.07 : price * 0.05;
 
-  const { skins, loading, setSkins, setLoading } = useSkinsStore();
+  const { skins, loading, setSkins, setLoading, removeSkin } = useSkinsStore();
   const [isCooldownActive, setIsCooldownActive] = useState(false);
   const [remainingCooldown, setRemainingCooldown] = useState(0);
   const cooldownIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -126,25 +130,44 @@ export default function Skins() {
 
   const handleSellClick = (skin: ISkin) => {
     setSelectedSkin(skin);
-    setPrice(0); // Yangi interfeysda narx yo'q, default 0
-    setIsAdvertisement(false); // Reset reklama bo'limi
-    setAdHours(0); // Reset telegram soat
+    setPrice(0);
+    setDescription("");
+    setIsAdvertisement(false);
+    setAdHours(0);
   };
 
   const handleClose = () => {
     setSelectedSkin(null);
   };
 
-  const handleSell = () => {
-    if (adHours > 0 && telegramPrice <= 19999) {
-      toast.error("Telegram uchun umumiy narx 19999 dan katta bo'lishi kerak.");
+  const handleSell = async () => {
+    if (!selectedSkin) return;
+    if (price <= 0) {
+      toast.error("Narx 0 dan katta boʻlishi kerak.");
       return;
     }
-    // TODO: Implement the actual sell logic with an API call
-    console.log(
-      `Selling ${selectedSkin?.market_hash_name} for ${price} tilav, reklama: ${isAdvertisement}, komissiya: ${commission}, telegram: ${adHours} soat (${telegramPrice} tilav)`
-    );
-    handleClose();
+
+    setIsSubmitting(true);
+    try {
+      const skinData = {
+        ...selectedSkin,
+        price,
+        description,
+        advertising: isAdvertisement,
+        advertising_hours: adHours,
+      };
+
+      await skinService.create(skinData);
+      removeSkin(selectedSkin.assetid); // Sotuvga qo'yilgan skinni ro'yxatdan olib tashlash
+      toast.success(`${selectedSkin.market_hash_name} sotuvga qo'yildi!`);
+      handleClose();
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || "Xatolik yuz berdi";
+      toast.error(errorMessage);
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -254,18 +277,32 @@ export default function Skins() {
                     className="max-w-full max-h-full object-cover"
                   />
                 </div>
-                <div className="mt-4">
-                  <label htmlFor="price" className="text-sm font-medium">
-                    Narx (tilav)
-                  </label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={price}
-                    onChange={(e) => setPrice(Number(e.target.value))}
-                    className="mt-1"
-                  />
-                  <div className="flex items-center space-x-2 mt-4">
+                <div className="mt-4 space-y-4">
+                  <div>
+                    <Label htmlFor="price" className="text-sm font-medium">
+                      Narx (tilav)
+                    </Label>
+                    <Input
+                      id="price"
+                      type="number"
+                      value={price}
+                      onChange={(e) => setPrice(Number(e.target.value))}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="description" className="text-sm font-medium">
+                      Tavsif (ixtiyoriy)
+                    </Label>
+                    <Textarea
+                      id="description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Skin haqida qo'shimcha ma'lumot..."
+                      className="mt-1"
+                    />
+                  </div>
+                  <div className="flex items-center space-x-2">
                     <Checkbox
                       id="advertisement"
                       checked={isAdvertisement}
@@ -277,33 +314,35 @@ export default function Skins() {
                       htmlFor="advertisement"
                       className="text-sm font-medium"
                     >
-                      Reklama bo'limiga joylashtirish (komissiya 7%)
+                      Reklama bo'limiga joylashtirish (komissiya +2%)
                     </Label>
                   </div>
-                  <div className="flex items-center gap-2 mt-3">
-                    <span className="text-sm">
-                      Telegram kanal topida:
-                    </span>
-                    <Select
-                      value={String(adHours)}
-                      onValueChange={(v) => setAdHours(Number(v))}
-                    >
-                      <SelectTrigger className="w-32">
-                        <SelectValue placeholder="Soat tanlang" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Array.from({ length: 25 }, (_, i) => (
-                          <SelectItem key={i} value={String(i)}>
-                            {i} soat
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {isAdvertisement && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm">
+                        Telegram kanal topida:
+                      </span>
+                      <Select
+                        value={String(adHours)}
+                        onValueChange={(v) => setAdHours(Number(v))}
+                      >
+                        <SelectTrigger className="w-32">
+                          <SelectValue placeholder="Soat tanlang" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from({ length: 25 }, (_, i) => (
+                            <SelectItem key={i} value={String(i)}>
+                              {i} soat
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                   <div className="px-2 py-0.5 text-xs bg-slate-100 text-slate-700 mt-1 border border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700">
                     Telegram kanalda topda ushlab turish. Soatiga 1000 tilav olinadi.
                   </div>
-                  <div className="mt-3 text-sm">
+                  <div className="mt-3 text-sm space-y-1">
                     <div className="flex justify-between">
                       <span className="text-gray-500">
                         Komissiya ({isAdvertisement ? "7%" : "5%"}):
@@ -312,15 +351,15 @@ export default function Skins() {
                         {commission.toLocaleString()} tilav
                       </span>
                     </div>
-                    <div className="flex justify-between mt-1">
+                    <div className="flex justify-between">
                       <span className="text-gray-500">
-                        Telegram reklama narxi:
+                        Reklama narxi:
                       </span>
                       <span className="font-medium">
                         {telegramPrice.toLocaleString()} tilav
                       </span>
                     </div>
-                    <div className="flex justify-between font-bold mt-1">
+                    <div className="flex justify-between font-bold">
                       <span>Siz olasiz:</span>
                       <span>{(price - commission).toLocaleString()} tilav</span>
                     </div>
@@ -328,11 +367,11 @@ export default function Skins() {
                 </div>
               </div>
               <DrawerFooter className="bg-muted/10 border-t p-4">
-                <Button onClick={handleSell} className="text-white font-bold">
-                  Sotish
+                <Button onClick={handleSell} disabled={isSubmitting} className="text-white font-bold">
+                  {isSubmitting ? "Yuborilmoqda..." : "Sotish"}
                 </Button>
                 <DrawerClose asChild>
-                  <Button variant="outline" onClick={handleClose}>
+                  <Button variant="outline" onClick={handleClose} disabled={isSubmitting}>
                     Bekor qilish
                   </Button>
                 </DrawerClose>
