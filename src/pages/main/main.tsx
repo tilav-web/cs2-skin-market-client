@@ -5,49 +5,47 @@ import coinMain from "@/assets/coin-main.png";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatBalance } from "@/lib/utils";
-import { useEffect, useRef, useCallback } from "react"; // useCallback ni import qilamiz
-import { skinService } from "@/services/skin.service";
-import { useAdvertisedSkinsStore } from "@/stores/advertised-skins/advertised-skins.store";
+import { useEffect, useRef, useCallback } from 'react';
+import { skinService } from '@/services/skin.service';
+import { useAdvertisedSkinsStore } from '@/stores/advertised-skins/advertised-skins.store';
 
 export default function MainPage() {
   const user = useUserStore((state) => state.user);
-  const {
-    skins,
-    loading,
-    page,
-    hasMore,
-    setSkins,
-    addSkins,
-    setLoading,
-    setPage,
-    reset,
-  } = useAdvertisedSkinsStore(); // totalPages ni olib tashladik
+  const { skins, loading, page, hasMore, setSkins, addSkins, setLoading, setPage, reset } = useAdvertisedSkinsStore();
   const observerTarget = useRef(null);
+  const mounted = useRef(false); // Mounted holatini kuzatish uchun ref
 
   const fetchAdvertisedSkins = useCallback(async () => {
     if (loading || !hasMore) return;
     setLoading(true);
     try {
       const res = await skinService.getAdvertisedSkins(page);
-      console.log(res);
-      
-      if (page === 1) {
-        setSkins(res.items, res.totalPages);
-      } else {
-        addSkins(res.items, res.totalPages);
+      if (mounted.current) { // Faqat komponent mounted bo'lsa state ni yangilash
+        if (page === 1) {
+          setSkins(res.items, res.totalPages);
+        } else {
+          addSkins(res.items, res.totalPages);
+        }
+        setPage(page + 1);
       }
-      setPage(page + 1);
     } catch (error) {
       console.error("Reklamadagi skinlarni yuklashda xatolik:", error);
     } finally {
-      setLoading(false);
+      if (mounted.current) { // Faqat komponent mounted bo'lsa loading ni o'chirish
+        setLoading(false);
+      }
     }
-  }, [loading, hasMore, page, setSkins, addSkins, setLoading, setPage]); // Dependencies
+  }, [loading, hasMore, page, setSkins, addSkins, setLoading, setPage]);
 
   useEffect(() => {
+    mounted.current = true; // Komponent mounted bo'lganda true qilish
     reset(); // Komponent yuklanganda store'ni tozalash
     fetchAdvertisedSkins();
-  }, [reset, fetchAdvertisedSkins]); // Dependencies
+
+    return () => {
+      mounted.current = false; // Komponent unmounted bo'lganda false qilish
+    };
+  }, [reset, fetchAdvertisedSkins]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -59,13 +57,15 @@ export default function MainPage() {
       { threshold: 1.0 }
     );
 
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
+    const currentObserverTarget = observerTarget.current; // Ref qiymatini saqlash
+
+    if (currentObserverTarget) {
+      observer.observe(currentObserverTarget);
     }
 
     return () => {
-      if (observerTarget.current) {
-        observer.unobserve(observerTarget.current);
+      if (currentObserverTarget) {
+        observer.unobserve(currentObserverTarget);
       }
     };
   }, [hasMore, loading, fetchAdvertisedSkins]);
@@ -76,11 +76,7 @@ export default function MainPage() {
       <div className="flex flex-col items-center mb-2">
         <img src={coinMain} alt="Tilav Coin" className="w-26 h-26" />
         <p className="font-bold text-xl">Tilav coin</p>
-        <p className="text-center text-sm text-gray-500">
-          Tilav coin yordamida skin-lar sotib oling.
-          <br />
-          <strong>1 so'm = 1 tilav.</strong>
-        </p>
+        <p className="text-center text-sm text-gray-500">Tilav coin yordamida skin-lar sotib oling.<br/><strong>1 so'm = 1 tilav.</strong></p>
       </div>
       {/* Balance card */}
       <div className="flex justify-center mb-6">
@@ -90,17 +86,13 @@ export default function MainPage() {
             <img src={coinMain} alt="Tilav Coin" className="w-6 h-6" />
             {formatBalance(user?.balance ?? 0)}
           </span>
-          <Button className="mt-2 w-full text-white font-bold">
-            Hisobni to'ldirish
-          </Button>
+          <Button className="mt-2 w-full text-white font-bold">Hisobni to'ldirish</Button>
         </Card>
       </div>
       <div className="grid grid-cols-2 gap-2">
         {skins.map((skin) => (
           <div key={skin.assetid} className="relative">
-            <Badge className="absolute left-2 top-2 z-10 text-white font-bold">
-              reklama
-            </Badge>
+            <Badge className="absolute left-2 top-2 z-10 text-white font-bold">reklama</Badge>
             <SkinCard skin={skin} />
           </div>
         ))}
@@ -112,9 +104,9 @@ export default function MainPage() {
             Reklama bo'limidagi barcha skinlar ko'rsatildi.
           </div>
         )}
-        <div ref={observerTarget} className="col-span-2 h-1"></div>{" "}
-        {/* Observer target */}
+        <div ref={observerTarget} className="col-span-2 h-1"></div> {/* Observer target */}
       </div>
     </div>
   );
 }
+
