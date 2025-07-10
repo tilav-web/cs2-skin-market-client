@@ -89,7 +89,8 @@ export default function Skins() {
       checkCooldown();
     }, 1000);
     return () => {
-      if (cooldownIntervalRef.current) clearInterval(cooldownIntervalRef.current);
+      if (cooldownIntervalRef.current)
+        clearInterval(cooldownIntervalRef.current);
     };
   }, [checkCooldown]);
 
@@ -142,7 +143,7 @@ export default function Skins() {
 
   const handleSell = async () => {
     if (!selectedSkin) return;
-    if (price <= 0) {
+    if (price < 0) {
       toast.error("Narx 0 dan katta boʻlishi kerak.");
       return;
     }
@@ -171,7 +172,9 @@ export default function Skins() {
 
   return (
     <div className="relative">
-      <div className="flex flex-col items-center mb-4"> {/* Added relative for positioning */}
+      <div className="flex flex-col items-center mb-4">
+        {" "}
+        {/* Added relative for positioning */}
         <img src={coinSub} alt="Tilav Coin" className="w-24 h-24" />
         <p className="font-bold text-xl mt-2">Tilav coin</p>
         <p className="text-center text-sm text-gray-500 px-4">
@@ -179,7 +182,9 @@ export default function Skins() {
           "tilav coin"da amalga oshiriladi. <strong>1 so'm = 1 tilav.</strong>
         </p>
         {/* Refresh Button */}
-        <div className="absolute top-0 right-0 mt-2 mr-2"> {/* Positioned top-right */}
+        <div className="absolute top-0 right-0 mt-2 mr-2">
+          {" "}
+          {/* Positioned top-right */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -195,7 +200,9 @@ export default function Skins() {
               <TooltipContent>
                 <p>
                   {isCooldownActive
-                    ? `Qayta yangilash uchun ${formatTime(remainingCooldown)} kuting.`
+                    ? `Qayta yangilash uchun ${formatTime(
+                        remainingCooldown
+                      )} kuting.`
                     : "Skinlarni yangilash"}
                 </p>
               </TooltipContent>
@@ -291,7 +298,10 @@ export default function Skins() {
                   </div>
                   {price === 0 && (
                     <div>
-                      <Label htmlFor="description" className="text-sm font-medium">
+                      <Label
+                        htmlFor="description"
+                        className="text-sm font-medium"
+                      >
                         Tavsif (ixtiyoriy)
                       </Label>
                       <Textarea
@@ -320,9 +330,7 @@ export default function Skins() {
                     </Label>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">
-                      Telegram kanal topida:
-                    </span>
+                    <span className="text-sm">Telegram kanal topida:</span>
                     <Select
                       value={String(adHours)}
                       onValueChange={(v) => setAdHours(Number(v))}
@@ -340,7 +348,8 @@ export default function Skins() {
                     </Select>
                   </div>
                   <div className="px-2 py-0.5 text-xs bg-slate-100 text-slate-700 mt-1 border border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700">
-                    Telegram kanalda topda ushlab turish. Soatiga 1000 tilav olinadi.
+                    Telegram kanalda topda ushlab turish. Soatiga 1000 tilav
+                    olinadi.
                   </div>
                   <div className="mt-3 text-sm space-y-1">
                     <div className="flex justify-between">
@@ -352,9 +361,7 @@ export default function Skins() {
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500">
-                        Reklama narxi:
-                      </span>
+                      <span className="text-gray-500">Reklama narxi:</span>
                       <span className="font-medium">
                         {telegramPrice.toLocaleString()} tilav
                       </span>
@@ -367,11 +374,19 @@ export default function Skins() {
                 </div>
               </div>
               <DrawerFooter className="bg-muted/10 border-t p-4">
-                <Button onClick={handleSell} disabled={isSubmitting} className="text-white font-bold">
+                <Button
+                  onClick={handleSell}
+                  disabled={isSubmitting}
+                  className="text-white font-bold"
+                >
                   {isSubmitting ? "Yuborilmoqda..." : "Sotish"}
                 </Button>
                 <DrawerClose asChild>
-                  <Button variant="outline" onClick={handleClose} disabled={isSubmitting}>
+                  <Button
+                    variant="outline"
+                    onClick={handleClose}
+                    disabled={isSubmitting}
+                  >
                     Bekor qilish
                   </Button>
                 </DrawerClose>
