@@ -310,6 +310,7 @@ export default function Skins() {
                       onCheckedChange={(checked) =>
                         setIsAdvertisement(Boolean(checked))
                       }
+                      disabled={price === 0} // Narx 0 bo'lsa o'chiriladi
                     />
                     <Label
                       htmlFor="advertisement"
