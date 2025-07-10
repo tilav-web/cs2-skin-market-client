@@ -39,7 +39,9 @@ export default function MainPage() {
 
   useEffect(() => {
     mounted.current = true; // Komponent mounted bo'lganda true qilish
-    reset(); // Komponent yuklanganda store'ni tozalash
+    if (mounted.current) { // reset() ni ham mounted bo'lsa chaqirish
+      reset(); // Komponent yuklanganda store'ni tozalash
+    }
     fetchAdvertisedSkins();
 
     return () => {
