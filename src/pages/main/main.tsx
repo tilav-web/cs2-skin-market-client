@@ -1,76 +1,32 @@
 import { SkinCard } from "@/components/common/skin-card";
+import type { ISkin } from "@/interfaces/skin.interface";
 import { Badge } from "@/components/ui/badge";
 import { useUserStore } from "@/stores/auth/user.store";
 import coinMain from "@/assets/coin-main.png";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatBalance } from "@/lib/utils";
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { skinService } from '@/services/skin.service';
-import { useAdvertisedSkinsStore } from '@/stores/advertised-skins/advertised-skins.store';
 
 export default function MainPage() {
   const user = useUserStore((state) => state.user);
-  const { skins, loading, page, hasMore, setSkins, addSkins, setLoading, setPage, reset } = useAdvertisedSkinsStore();
-  const observerTarget = useRef(null);
-  const mounted = useRef(false); // Mounted holatini kuzatish uchun ref
+  const [skins, setSkins] = useState<ISkin[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchAdvertisedSkins = useCallback(async () => {
-    if (loading || !hasMore) return;
+  useEffect(() => {
     setLoading(true);
-    try {
-      const res = await skinService.getAdvertisedSkins(page);
-      if (mounted.current) { // Faqat komponent mounted bo'lsa state ni yangilash
-        if (page === 1) {
-          setSkins(res.items, res.totalPages);
-        } else {
-          addSkins(res.items, res.totalPages);
-        }
-        setPage(page + 1);
-      }
-    } catch (error) {
-      console.error("Reklamadagi skinlarni yuklashda xatolik:", error);
-    } finally {
-      if (mounted.current) { // Faqat komponent mounted bo'lsa loading ni o'chirish
-        setLoading(false);
-      }
-    }
-  }, [loading, hasMore, page, setSkins, addSkins, setLoading, setPage]);
-
-  useEffect(() => {
-    mounted.current = true; // Komponent mounted bo'lganda true qilish
-    if (mounted.current) { // reset() ni ham mounted bo'lsa chaqirish
-      reset(); // Komponent yuklanganda store'ni tozalash
-    }
-    fetchAdvertisedSkins();
-
-    return () => {
-      mounted.current = false; // Komponent unmounted bo'lganda false qilish
-    };
-  }, [reset, fetchAdvertisedSkins]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !loading) {
-          fetchAdvertisedSkins();
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    const currentObserverTarget = observerTarget.current; // Ref qiymatini saqlash
-
-    if (currentObserverTarget) {
-      observer.observe(currentObserverTarget);
-    }
-
-    return () => {
-      if (currentObserverTarget) {
-        observer.unobserve(currentObserverTarget);
-      }
-    };
-  }, [hasMore, loading, fetchAdvertisedSkins]);
+    skinService.getAdvertisingPendingSkins(page, 20)
+      .then((res) => {
+        setSkins(res.items);
+        setTotalPages(res.totalPages);
+      })
+      .catch(() => setError('Skinlarni yuklashda xatolik'))
+      .finally(() => setLoading(false));
+  }, [page]);
 
   return (
     <div>
@@ -92,23 +48,36 @@ export default function MainPage() {
         </Card>
       </div>
       <div className="grid grid-cols-2 gap-2">
+        {loading && <div className="col-span-2 text-center">Yuklanmoqda...</div>}
+        {error && <div className="col-span-2 text-center text-red-500">{error}</div>}
+        {!loading && !error && skins.length === 0 && (
+          <div className="col-span-2 text-center">Hozircha reklamaga qo'yilgan skinlar yo'q</div>
+        )}
         {skins.map((skin) => (
           <div key={skin.assetid} className="relative">
             <Badge className="absolute left-2 top-2 z-10 text-white font-bold">reklama</Badge>
             <SkinCard skin={skin} />
           </div>
         ))}
-        {loading && (
-          <div className="col-span-2 text-center py-4">Yuklanmoqda...</div>
-        )}
-        {!hasMore && !loading && skins.length > 0 && (
-          <div className="col-span-2 text-center text-gray-500 py-4">
-            Reklama bo'limidagi barcha skinlar ko'rsatildi.
-          </div>
-        )}
-        <div ref={observerTarget} className="col-span-2 h-1"></div> {/* Observer target */}
+      </div>
+      {/* Pagination controls */}
+      <div className="flex justify-center mt-4 gap-2">
+        <Button
+          variant="outline"
+          disabled={page <= 1 || loading}
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+        >
+          Oldingi
+        </Button>
+        <span className="flex items-center px-2">{page} / {totalPages}</span>
+        <Button
+          variant="outline"
+          disabled={page >= totalPages || loading}
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+        >
+          Keyingi
+        </Button>
       </div>
     </div>
   );
 }
-
