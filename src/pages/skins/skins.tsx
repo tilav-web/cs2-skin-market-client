@@ -150,14 +150,13 @@ export default function Skins() {
     setIsSubmitting(true);
     try {
       const skinData = {
-        ...selectedSkin,
         price,
-        description,
+        description: price === 0 ? description : undefined, // Faqat narx 0 bo'lsa description yuboriladi
         advertising: isAdvertisement,
         advertising_hours: adHours,
       };
 
-      await skinService.create(skinData);
+      await skinService.listSkinForSale(selectedSkin._id, skinData); // _id ni birinchi parametr qilib yuboramiz
       removeSkin(selectedSkin.assetid); // Sotuvga qo'yilgan skinni ro'yxatdan olib tashlash
       toast.success(`${selectedSkin.market_hash_name} sotuvga qo'yildi!`);
       handleClose();
@@ -299,7 +298,7 @@ export default function Skins() {
                         id="description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Skin haqida qo'shimcha ma'lumot..."
+                        placeholder="Tekin skin uchun telegram postiga habar qoldiring..."
                         className="mt-1"
                       />
                     </div>

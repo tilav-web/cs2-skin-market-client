@@ -3,15 +3,16 @@ import { endpoints } from '../common/api/endpoints';
 import type { ISkin } from '@/interfaces/skin.interface';
 
 // Serverdagi CreateSkinDto ga mos keladigan tip
-type CreateSkinPayload = Omit<ISkin, 'user' | '_id'> & {
+type CreateSkinPayload = {
+  price: number;
   description?: string;
   advertising?: boolean;
   advertising_hours?: number;
 };
 
 class SkinService {
-  async create(skinData: CreateSkinPayload) {
-    const res = await privateInstance.post(endpoints.SKINS, skinData);
+  async listSkinForSale(skinId: string, skinData: CreateSkinPayload) {
+    const res = await privateInstance.post(`${endpoints.SKINS}/${skinId}/list-for-sale`, skinData);
     return res.data;
   }
 
