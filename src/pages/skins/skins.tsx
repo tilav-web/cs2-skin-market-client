@@ -290,18 +290,20 @@ export default function Skins() {
                       className="mt-1"
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="description" className="text-sm font-medium">
-                      Tavsif (ixtiyoriy)
-                    </Label>
-                    <Textarea
-                      id="description"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      placeholder="Skin haqida qo'shimcha ma'lumot..."
-                      className="mt-1"
-                    />
-                  </div>
+                  {price === 0 && (
+                    <div>
+                      <Label htmlFor="description" className="text-sm font-medium">
+                        Tavsif (ixtiyoriy)
+                      </Label>
+                      <Textarea
+                        id="description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Skin haqida qo'shimcha ma'lumot..."
+                        className="mt-1"
+                      />
+                    </div>
+                  )}
                   <div className="flex items-center space-x-2">
                     <Checkbox
                       id="advertisement"
@@ -317,28 +319,26 @@ export default function Skins() {
                       Reklama bo'limiga joylashtirish (komissiya +2%)
                     </Label>
                   </div>
-                  {isAdvertisement && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm">
-                        Telegram kanal topida:
-                      </span>
-                      <Select
-                        value={String(adHours)}
-                        onValueChange={(v) => setAdHours(Number(v))}
-                      >
-                        <SelectTrigger className="w-32">
-                          <SelectValue placeholder="Soat tanlang" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Array.from({ length: 25 }, (_, i) => (
-                            <SelectItem key={i} value={String(i)}>
-                              {i} soat
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">
+                      Telegram kanal topida:
+                    </span>
+                    <Select
+                      value={String(adHours)}
+                      onValueChange={(v) => setAdHours(Number(v))}
+                    >
+                      <SelectTrigger className="w-32">
+                        <SelectValue placeholder="Soat tanlang" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 25 }, (_, i) => (
+                          <SelectItem key={i} value={String(i)}>
+                            {i} soat
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div className="px-2 py-0.5 text-xs bg-slate-100 text-slate-700 mt-1 border border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700">
                     Telegram kanalda topda ushlab turish. Soatiga 1000 tilav olinadi.
                   </div>

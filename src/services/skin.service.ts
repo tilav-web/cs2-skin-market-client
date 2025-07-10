@@ -22,6 +22,13 @@ class SkinService {
     return res.data;
   }
 
+  async getAdvertisedSkins(page: number = 1, limit: number = 20) {
+    const res = await privateInstance.get(`${endpoints.SKINS}/advertised`, {
+      params: { page, limit },
+    });
+    return res.data;
+  }
+
   async getSkinById(id: string) {
     const res = await privateInstance.get(`${endpoints.SKINS}/public/${id}`);
     return res.data;
