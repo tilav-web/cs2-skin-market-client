@@ -19,6 +19,9 @@ export default function MainPage() {
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
+  console.log(1);
+  
+
   useEffect(() => {
     setLoading(true);
     skinService
