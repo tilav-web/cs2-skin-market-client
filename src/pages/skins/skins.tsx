@@ -159,7 +159,7 @@ export default function Skins() {
 
       await skinService.listSkinForSale(selectedSkin._id, skinData); // _id ni birinchi parametr qilib yuboramiz
       removeSkin(selectedSkin.assetid); // Sotuvga qo'yilgan skinni ro'yxatdan olib tashlash
-      toast.success(`${selectedSkin.market_hash_name} sotuvga qo'yildi.`);
+      toast.success(`${selectedSkin.market_hash_name} sotuvga qo'yildi!`);
       handleClose();
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || "Xatolik yuz berdi";
