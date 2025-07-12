@@ -6,8 +6,8 @@ import coinMain from "@/assets/coin-main.png";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatBalance } from "@/lib/utils";
-import { useEffect, useState } from 'react';
-import { skinService } from '@/services/skin.service';
+import { useEffect, useState } from "react";
+import { skinService } from "@/services/skin.service";
 import { useNavigate } from "react-router-dom";
 
 export default function MainPage() {
@@ -21,12 +21,13 @@ export default function MainPage() {
 
   useEffect(() => {
     setLoading(true);
-    skinService.getAdvertisingPendingSkins(page, 20)
+    skinService
+      .getAdvertisingPendingSkins(page, 20)
       .then((res) => {
         setSkins(res.items);
         setTotalPages(res.totalPages);
       })
-      .catch(() => setError('Skinlarni yuklashda xatolik'))
+      .catch(() => setError("Skinlarni yuklashda xatolik"))
       .finally(() => setLoading(false));
   }, [page]);
 
@@ -36,7 +37,11 @@ export default function MainPage() {
       <div className="flex flex-col items-center mb-2">
         <img src={coinMain} alt="Tilav Coin" className="w-26 h-26" />
         <p className="font-bold text-xl">Tilav coin</p>
-        <p className="text-center text-sm text-gray-500">Tilav coin yordamida skin-lar sotib oling.<br/><strong>1 so'm = 1 tilav.</strong></p>
+        <p className="text-center text-sm text-gray-500">
+          Tilav coin yordamida skin-lar sotib oling.
+          <br />
+          <strong>1 so'm = 1 tilav.</strong>
+        </p>
       </div>
       {/* Balance card */}
       <div className="flex justify-center mb-6">
@@ -46,18 +51,35 @@ export default function MainPage() {
             <img src={coinMain} alt="Tilav Coin" className="w-6 h-6" />
             {formatBalance(user?.balance ?? 0)}
           </span>
-          <Button className="mt-2 w-full text-white font-bold" onClick={() => navigate('/profile/deposit')}>Hisobni to'ldirish</Button>
+          <Button
+            className="mt-2 w-full text-white font-bold"
+            onClick={() => {
+              console.log(1);
+
+              navigate("/profile/deposit");
+            }}
+          >
+            Hisobni to'ldirish
+          </Button>
         </Card>
       </div>
       <div className="grid grid-cols-2 gap-2">
-        {loading && <div className="col-span-2 text-center">Yuklanmoqda...</div>}
-        {error && <div className="col-span-2 text-center text-red-500">{error}</div>}
+        {loading && (
+          <div className="col-span-2 text-center">Yuklanmoqda...</div>
+        )}
+        {error && (
+          <div className="col-span-2 text-center text-red-500">{error}</div>
+        )}
         {!loading && !error && skins.length === 0 && (
-          <div className="col-span-2 text-center">Hozircha reklamaga qo'yilgan skinlar yo'q</div>
+          <div className="col-span-2 text-center">
+            Hozircha reklamaga qo'yilgan skinlar yo'q
+          </div>
         )}
         {skins.map((skin) => (
           <div key={skin.assetid} className="relative">
-            <Badge className="absolute left-2 top-2 z-10 text-white font-bold">reklama</Badge>
+            <Badge className="absolute left-2 top-2 z-10 text-white font-bold">
+              reklama
+            </Badge>
             <SkinCard skin={skin} />
           </div>
         ))}
@@ -71,7 +93,9 @@ export default function MainPage() {
         >
           Oldingi
         </Button>
-        <span className="flex items-center px-2">{page} / {totalPages}</span>
+        <span className="flex items-center px-2">
+          {page} / {totalPages}
+        </span>
         <Button
           variant="outline"
           disabled={page >= totalPages || loading}
