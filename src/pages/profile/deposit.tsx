@@ -59,7 +59,7 @@ export function DepositPage() {
         <form onSubmit={handleDeposit}>
           <CardContent>
             <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
+              <div className="flex flex-col gap-2">
                 <Label htmlFor="amount">Summa (so'm)</Label>
                 <Input
                   id="amount"

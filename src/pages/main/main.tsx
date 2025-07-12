@@ -19,9 +19,6 @@ export default function MainPage() {
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
-  console.log(1);
-  
-
   useEffect(() => {
     setLoading(true);
     skinService
@@ -56,11 +53,7 @@ export default function MainPage() {
           </span>
           <Button
             className="mt-2 w-full text-white font-bold"
-            onClick={() => {
-              console.log(1);
-
-              navigate("/profile/deposit");
-            }}
+            onClick={() => navigate("/profile/deposit")}
           >
             Hisobni to'ldirish
           </Button>
