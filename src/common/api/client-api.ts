@@ -65,3 +65,10 @@ requestInstance({
 });
 
 export { privateInstance, privateInstanceFile };
+
+export const clientApi = {
+  initiateDeposit: async (amount: number): Promise<{ url: string }> => {
+    const response = await privateInstance.post('/transactions/deposit/initiate', { amount });
+    return response.data;
+  },
+};

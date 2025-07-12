@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { formatBalance } from "@/lib/utils";
 import { useEffect, useState } from 'react';
 import { skinService } from '@/services/skin.service';
+import { useNavigate } from "react-router-dom";
 
 export default function MainPage() {
   const user = useUserStore((state) => state.user);
@@ -16,6 +17,7 @@ export default function MainPage() {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -44,7 +46,7 @@ export default function MainPage() {
             <img src={coinMain} alt="Tilav Coin" className="w-6 h-6" />
             {formatBalance(user?.balance ?? 0)}
           </span>
-          <Button className="mt-2 w-full text-white font-bold">Hisobni to'ldirish</Button>
+          <Button className="mt-2 w-full text-white font-bold" onClick={() => navigate('/profile/deposit')}>Hisobni to'ldirish</Button>
         </Card>
       </div>
       <div className="grid grid-cols-2 gap-2">

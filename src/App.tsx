@@ -7,6 +7,7 @@ import Profile from "./pages/profile/profile";
 import Skins from "./pages/skins/skins";
 import Referrals from "./pages/referrals/referrals";
 import BuySkinPage from "./pages/skins/buy";
+import { DepositPage } from "./pages/profile/deposit";
 import { Toaster } from "@/components/ui/sonner";
 import { useEffect } from "react";
 import { useUserStore } from "./stores/auth/user.store";
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/skins/buy/:id",
         element: <BuySkinPage />,
+      },
+      {
+        path: "/profile/deposit",
+        element: <DepositPage />,
       },
       {
         path: '/auth',

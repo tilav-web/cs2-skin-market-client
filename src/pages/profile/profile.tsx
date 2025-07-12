@@ -153,7 +153,7 @@ export default function Profile() {
               </div>
             </div>
             <div className="flex gap-1">
-              <Button variant="outline" size="icon" className="p-2" title="Hisobni to'ldirish">
+              <Button variant="outline" size="icon" className="p-2" title="Hisobni to'ldirish" onClick={() => navigate('/profile/deposit')}>
                 <ArrowDownCircle className="h-5 w-5 text-green-600" />
               </Button>
               <Button variant="outline" size="icon" className="p-2" title="Pul yechish">
