@@ -11,14 +11,7 @@ export interface ITransaction {
   amount: number;
   type: TransactionType;
   status: 'pending' | 'completed' | 'failed';
-  skin?: {
-    name: string;
-    wear: string;
-    image: string;
-    rarity: string;
-    statTrak: boolean;
-    weapon: string;
-  } | null;
+  skin?: ISkin | null;
   createdAt: string;
   updatedAt: string;
 } 

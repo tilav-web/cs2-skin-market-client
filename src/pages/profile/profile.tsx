@@ -1,4 +1,6 @@
 import { useUserStore } from "@/stores/auth/user.store";
+import { useTransactionsStore } from "@/stores/transactions/transactions.store";
+import { transactionService } from "@/services/transaction.service";
 import {
   Card,
   CardContent,
@@ -9,7 +11,13 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Phone, Wallet, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import {
+  User,
+  Phone,
+  Wallet,
+  ArrowDownCircle,
+  ArrowUpCircle,
+} from "lucide-react";
 import type { ITransaction } from "@/interfaces/transaction.interface";
 import coinMain from "@/assets/coin-main.png";
 import { useEffect, useState, type ElementType } from "react";
@@ -20,64 +28,20 @@ import { formatBalance } from "@/lib/utils";
 const STEAM_PRIVACY_URL = "https://steamcommunity.com/my/edit/settings";
 
 // MOCK TRANSACTIONS
-const mockTransactions: ITransaction[] = [
-  {
-    _id: "1",
-    user: "user1",
-    amount: 50000,
-    type: "deposit",
-    status: "completed",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+const typeMap: Record<
+  ITransaction["type"],
+  { label: string; icon?: ElementType; color: string }
+> = {
+  deposit: {
+    label: "Hisob to'ldirish",
+    icon: ArrowDownCircle,
+    color: "text-green-600",
   },
-  {
-    _id: "2",
-    user: "user1",
-    amount: 20000,
-    type: "withdraw",
-    status: "pending",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+  withdraw: {
+    label: "Pul yechish",
+    icon: ArrowUpCircle,
+    color: "text-yellow-600",
   },
-  {
-    _id: "3",
-    user: "user1",
-    amount: 1550,
-    type: "sale",
-    status: "completed",
-    skin: {
-      name: "Redline",
-      wear: "Field-Tested",
-      image: "https://cdn.csgoskins.gg/public/uih/weapons/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbnMvYmFzZV93ZWFwb25zL3dlYXBvbl9hazQ3LmQwMGQxZGZhMDk2MjFjMjk3Njk2ZTM1M2Y0MTMzMzBjOTRlZDUwOTAucG5n/auto/auto/85/notrim/06be7f9eb59aeebc19509c82a43a82b5.webp",
-      rarity: "Classified",
-      statTrak: false,
-      weapon: "AK-47",
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    _id: "4",
-    user: "user1",
-    amount: 7500,
-    type: "buy",
-    status: "completed",
-    skin: {
-      name: "Asiimov",
-      wear: "Battle-Scarred",
-      image: "https://cdn.csgoskins.gg/public/uih/weapons/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbnMvYmFzZV93ZWFwb25zL3dlYXBvbl9hazQ3LmQwMGQxZGZhMDk2MjFjMjk3Njk2ZTM1M2Y0MTMzMzBjOTRlZDUwOTAucG5n/auto/auto/85/notrim/06be7f9eb59aeebc19509c82a43a82b5.webp",
-      rarity: "Covert",
-      statTrak: false,
-      weapon: "AWP",
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
-
-const typeMap: Record<ITransaction["type"], { label: string; icon?: ElementType; color: string }> = {
-  deposit: { label: "Hisob to'ldirish", icon: ArrowDownCircle, color: "text-green-600" },
-  withdraw: { label: "Pul yechish", icon: ArrowUpCircle, color: "text-yellow-600" },
   sale: { label: "Skin sotish", color: "" },
   buy: { label: "Skin sotib olish", color: "" },
   bonus: { label: "Bonus", icon: Wallet, color: "text-pink-600" },
@@ -86,6 +50,30 @@ const typeMap: Record<ITransaction["type"], { label: string; icon?: ElementType;
 export default function Profile() {
   const user = useUserStore((state) => state.user);
   const navigate = useNavigate();
+  const { transactions, setTransactions } = useTransactionsStore();
+  const [loadingTransactions, setLoadingTransactions] = useState(true);
+  const [transactionsError, setTransactionsError] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        setLoadingTransactions(true);
+        const data = await transactionService.getUserTransactions();
+        setTransactions(data);
+      } catch (err) {
+        console.error("Failed to fetch transactions:", err);
+        setTransactionsError("Tranzaksiyalarni yuklashda xatolik yuz berdi.");
+      } finally {
+        setLoadingTransactions(false);
+      }
+    };
+
+    if (user) {
+      fetchTransactions();
+    }
+  }, [user, setTransactions]);
 
   // Trade URL uchun state
   const [tradeUrl, setTradeUrl] = useState(user?.trade_url || "");
@@ -97,8 +85,8 @@ export default function Profile() {
       if (!user?.steam_id) {
         navigate("/auth");
       }
-    })()
-  }, [navigate, user?.steam_id])
+    })();
+  }, [navigate, user?.steam_id]);
 
   // user o'zgarganda tradeUrl ni yangilash
   useEffect(() => {
@@ -129,8 +117,12 @@ export default function Profile() {
             </AvatarFallback>
           </Avatar>
           <div>
-            <CardTitle className="text-lg">{user?.personaname || "Foydalanuvchi"}</CardTitle>
-            <CardDescription className="text-sm">@{user?.telegram_id || "telegram_id"}</CardDescription>
+            <CardTitle className="text-lg">
+              {user?.personaname || "Foydalanuvchi"}
+            </CardTitle>
+            <CardDescription className="text-sm">
+              @{user?.telegram_id || "telegram_id"}
+            </CardDescription>
           </div>
         </CardHeader>
         <CardContent className="p-4 grid gap-3">
@@ -138,7 +130,9 @@ export default function Profile() {
             <Phone className="h-5 w-5 text-muted-foreground" />
             <div>
               <p className="text-xs text-muted-foreground">Telefon raqam</p>
-              <p className="font-semibold text-sm">{user?.phone || "Kiritilmagan"}</p>
+              <p className="font-semibold text-sm">
+                {user?.phone || "Kiritilmagan"}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-3 rounded-lg border p-3 justify-between">
@@ -153,17 +147,31 @@ export default function Profile() {
               </div>
             </div>
             <div className="flex gap-1">
-              <Button variant="outline" size="icon" className="p-2" title="Hisobni to'ldirish" onClick={() => navigate('/profile/deposit')}>
+              <Button
+                variant="outline"
+                size="icon"
+                className="p-2"
+                title="Hisobni to'ldirish"
+                onClick={() => navigate("/profile/deposit")}
+              >
                 <ArrowDownCircle className="h-5 w-5 text-green-600" />
               </Button>
-              <Button variant="outline" size="icon" className="p-2" title="Pul yechish">
+              <Button
+                variant="outline"
+                size="icon"
+                className="p-2"
+                title="Pul yechish"
+              >
                 <ArrowUpCircle className="h-5 w-5 text-yellow-600" />
               </Button>
             </div>
           </div>
           {/* Trade URL textarea */}
           <div className="flex flex-col gap-2 rounded-lg border p-3">
-            <label htmlFor="trade-url" className="text-xs text-muted-foreground font-medium mb-1">
+            <label
+              htmlFor="trade-url"
+              className="text-xs text-muted-foreground font-medium mb-1"
+            >
               Steam Trade URL
             </label>
             <Textarea
@@ -172,59 +180,84 @@ export default function Profile() {
               value={tradeUrl}
               placeholder="Trade URL kiriting"
               onFocus={() => setIsEditingTradeUrl(true)}
-              onChange={e => {
+              onChange={(e) => {
                 setTradeUrl(e.target.value);
-                setIsTradeUrlChanged(e.target.value !== (user?.trade_url || ""));
+                setIsTradeUrlChanged(
+                  e.target.value !== (user?.trade_url || "")
+                );
               }}
               disabled={!user?.steam_id}
             />
             {isEditingTradeUrl && isTradeUrlChanged && (
-              <Button size="sm" className="self-end mt-1 text-white" onClick={handleSaveTradeUrl}>
+              <Button
+                size="sm"
+                className="self-end mt-1 text-white"
+                onClick={handleSaveTradeUrl}
+              >
                 Saqlash
               </Button>
             )}
           </div>
         </CardContent>
-          <CardFooter className="bg-muted/30 p-4">
-            <p className="text-sm text-muted-foreground">
-              Skin savdosi uchun Steam inventar profilingiz ochiq bo'lishi kerak. 
-              <a
-                href={STEAM_PRIVACY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline ml-1"
-              >
-                Sozlamalarga o'tish
-              </a>
-            </p>
-          </CardFooter>
+        <CardFooter className="bg-muted/30 p-4">
+          <p className="text-sm text-muted-foreground">
+            Skin savdosi uchun Steam inventar profilingiz ochiq bo'lishi kerak.
+            <a
+              href={STEAM_PRIVACY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline ml-1"
+            >
+              Sozlamalarga o'tish
+            </a>
+          </p>
+        </CardFooter>
       </Card>
 
       {/* Transaction History */}
       <Card className="shadow-md">
         <CardHeader className="p-4 pb-2">
           <CardTitle className="text-base">Hisob harakatlari</CardTitle>
-          <CardDescription className="text-xs">Barcha to'lovlar, yechishlar va skin savdolari</CardDescription>
+          <CardDescription className="text-xs">
+            Barcha to'lovlar, yechishlar va skin savdolari
+          </CardDescription>
         </CardHeader>
         <CardContent className="divide-y p-0">
-          {mockTransactions.length === 0 ? (
-            <div className="text-center text-muted-foreground py-8">Hozircha tranzaksiyalar yo'q</div>
+          {loadingTransactions ? (
+            <div className="text-center text-muted-foreground py-8">
+              Tranzaksiyalar yuklanmoqda...
+            </div>
+          ) : transactionsError ? (
+            <div className="text-center text-red-500 py-8">
+              {transactionsError}
+            </div>
+          ) : transactions.length === 0 ? (
+            <div className="text-center text-muted-foreground py-8">
+              Hozircha tranzaksiyalar yo'q
+            </div>
           ) : (
-            mockTransactions.map((tx) => {
+            transactions.map((tx) => {
               const TypeIcon = typeMap[tx.type].icon;
               return (
                 <div key={tx._id} className="flex items-center gap-3 py-3 px-4">
                   {/* Only icon for deposit/withdraw/bonus, only skin image for sale/buy */}
-                  {((tx.type === "deposit" || tx.type === "withdraw" || tx.type === "bonus") && TypeIcon) ? (
-                    <div className={`rounded-full bg-muted p-2 ${typeMap[tx.type].color}`}>
+                  {(tx.type === "deposit" ||
+                    tx.type === "withdraw" ||
+                    tx.type === "bonus") &&
+                  TypeIcon ? (
+                    <div
+                      className={`rounded-full bg-muted p-2 ${
+                        typeMap[tx.type].color
+                      }`}
+                    >
                       <TypeIcon className="h-5 w-5" />
                     </div>
                   ) : null}
                   {(tx.type === "sale" || tx.type === "buy") && tx.skin ? (
                     <div className="flex items-center">
                       <img
-                        src={tx.skin.image}
-                        alt={tx.skin.name}
+                        src={tx.skin.icon_url}
+                        alt={tx.skin.market_hash_name}
                         className="w-10 h-10 rounded-lg shadow border object-cover"
                       />
                     </div>
@@ -238,12 +271,32 @@ export default function Profile() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className={`font-bold text-sm ${tx.type === "withdraw" ? "text-yellow-600" : tx.type === "deposit" ? "text-green-600" : "text-primary"}`}>
+                    <span
+                      className={`font-bold text-sm ${
+                        tx.type === "withdraw"
+                          ? "text-yellow-600"
+                          : tx.type === "deposit"
+                          ? "text-green-600"
+                          : "text-primary"
+                      }`}
+                    >
                       {tx.type === "withdraw" || tx.type === "buy" ? "-" : "+"}
                       {tx.amount.toLocaleString()} tilav
                     </span>
-                    <div className={`text-xs ${tx.status === "completed" ? "text-green-600" : tx.status === "pending" ? "text-yellow-600" : "text-red-600"}`}>
-                      {tx.status === "completed" ? "Yakunlandi" : tx.status === "pending" ? "Kutilmoqda" : "Bekor qilingan"}
+                    <div
+                      className={`text-xs ${
+                        tx.status === "completed"
+                          ? "text-green-600"
+                          : tx.status === "pending"
+                          ? "text-yellow-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {tx.status === "completed"
+                        ? "Yakunlandi"
+                        : tx.status === "pending"
+                        ? "Kutilmoqda"
+                        : "Bekor qilingan"}
                     </div>
                   </div>
                 </div>
