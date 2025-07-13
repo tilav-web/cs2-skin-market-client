@@ -57,6 +57,14 @@ interface HapticFeedback {
   selectionChanged: () => void; // Tanlov o‘zgarishi effekti
 }
 
+interface BackButton {
+  isVisible: boolean;
+  onClick: (callback: () => void) => void;
+  offClick: (callback: () => void) => void;
+  show: () => void;
+  hide: () => void;
+}
+
 interface TelegramWebApp {
   initData: string; // Xavfsiz autentifikatsiya ma'lumotlari
   initDataUnsafe: WebAppData; // Xavfsiz bo‘lmagan ma'lumotlar obyekti
@@ -70,6 +78,7 @@ interface TelegramWebApp {
   isClosingConfirmationEnabled: boolean; // Ilovani yopish tasdiqlash yoqilganmi
   MainButton: MainButton; // Asosiy tugma obyekti
   HapticFeedback: HapticFeedback; // Vibratsiya effekti obyekti
+  BackButton: BackButton; // Orqaga qaytish tugmasi obyekti
   requestFullscreen: () => void; // Ilovani to‘liq ekran rejimida ochish
   lockOrientation: (orientation?: 'portrait' | 'landscape') => void; //
   expand: () => void; // Ilovani to‘liq ekran rejimida ochish

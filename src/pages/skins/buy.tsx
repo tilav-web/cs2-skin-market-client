@@ -111,7 +111,10 @@ export default function BuySkinPage() {
       </div>
       {/* Sticky buy button */}
       <div className="fixed bottom-0 left-0 w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 p-4 z-50 flex justify-center pb-22">
-        <Button className="w-full max-w-sm font-bold text-white bg-green-600 hover:bg-green-700 text-lg py-4 rounded-xl shadow-xl">
+        <Button
+          className="w-full max-w-sm font-bold text-white bg-green-600 hover:bg-green-700 text-lg py-4 rounded-xl shadow-xl"
+          disabled={skin.status !== "pending"}
+        >
           Sotib olish
         </Button>
       </div>
