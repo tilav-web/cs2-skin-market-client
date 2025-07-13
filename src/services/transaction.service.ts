@@ -1,13 +1,12 @@
-import { clientApi } from '@/common/api/client-api';
-import type { ITransaction } from '@/interfaces/transaction.interface';
+import { privateInstance } from "@/common/api/client-api";
 
 export const transactionService = {
-  getUserTransactions: async (): Promise<ITransaction[]> => {
+  getUserTransactions: async () => {
     try {
-      const transactions = await clientApi.getUserTransactions();
+      const transactions = await privateInstance.get("/transactions/my");
       return transactions;
     } catch (error) {
-      console.error('Error fetching user transactions:', error);
+      console.error("Error fetching user transactions:", error);
       throw error;
     }
   },
