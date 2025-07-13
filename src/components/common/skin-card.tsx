@@ -48,13 +48,20 @@ export const SkinCard = ({
     </div>
     {/* Sell/Buy Button */}
     <div className="mt-3">
-      {variant === "sell" && skin.tradable && (
+      {variant === "sell" && skin.tradable && skin.status === "available" ? (
         <Button
           className="w-full bg-white text-black border border-slate-300 hover:bg-slate-100 h-10 rounded-xl font-bold shadow dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:hover:bg-slate-800"
           onClick={() => onSellClick?.(skin)}
           disabled={!skin.tradable}
         >
           Sotish
+        </Button>
+      ) : (
+        <Button
+          asChild
+          className="w-full bg-red-500 text-white border border-slate-300 hover:bg-slate-100 h-10 rounded-xl font-bold shadow dark:bg-red-900 dark:text-white dark:border-red-700 dark:hover:bg-red-800"
+        >
+          Bekor qilish
         </Button>
       )}
       {variant === "buy" && skin.tradable && typeof skin.price === "number" && (
