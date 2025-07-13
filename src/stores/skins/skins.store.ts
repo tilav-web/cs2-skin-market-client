@@ -7,6 +7,7 @@ interface SkinsStore {
   setSkins: (skins: ISkin[]) => void;
   setLoading: (loading: boolean) => void;
   removeSkin: (assetid: string) => void;
+  updateSkin: (skinId: string, updatedData: Partial<ISkin>) => void;
   clearSkins: () => void;
 }
 
@@ -18,6 +19,12 @@ export const useSkinsStore = create<SkinsStore>((set) => ({
   removeSkin: (assetid) =>
     set((state) => ({
       skins: state.skins.filter((skin) => skin.assetid !== assetid),
+    })),
+  updateSkin: (skinId, updatedData) =>
+    set((state) => ({
+      skins: state.skins.map((skin) =>
+        skin._id === skinId ? { ...skin, ...updatedData } : skin
+      ),
     })),
   clearSkins: () => set({ skins: [] }),
 }));
