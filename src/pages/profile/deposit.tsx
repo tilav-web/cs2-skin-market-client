@@ -31,7 +31,7 @@ export function DepositPage() {
       const response = await clientApi.initiateDeposit(+amount);
       if (response.url) {
         // Foydalanuvchini Click to'lov sahifasiga yo'naltirish
-        window.location.href = response.url;
+        window.open(response.url, '_blank');
       }
     } catch (err) {
       setError(
@@ -56,7 +56,7 @@ export function DepositPage() {
             Click orqali hisobingizni oson to'ldiring.
           </CardDescription>
         </CardHeader>
-        <form onSubmit={handleDeposit}>
+        <form onSubmit={handleDeposit} className="flex flex-col gap-2">
           <CardContent>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col gap-2">
