@@ -30,13 +30,13 @@ export const SkinCard = ({
   onSellClick,
 }: SkinCardProps) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { removeAdvertisedSkin } = useAdvertisedSkinsStore();
+  const { updateAdvertisedSkin } = useAdvertisedSkinsStore();
 
   const handleCancelSale = async () => {
     try {
-      await skinService.cancelSale(skin._id);
+      const updatedSkin = await skinService.cancelSale(skin._id);
       toast.success("Skin sotuvdan olib tashlandi!");
-      removeAdvertisedSkin(skin._id);
+      updateAdvertisedSkin(skin._id, updatedSkin);
       setIsDrawerOpen(false);
     } catch (error) {
       console.error("Failed to cancel sale:", error);

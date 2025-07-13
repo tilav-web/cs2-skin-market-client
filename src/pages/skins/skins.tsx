@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { userService } from "@/services/user.service";
 import { skinService } from "@/services/skin.service"; // skinService ni import qilamiz
 import { useSkinsStore } from "@/stores/skins/skins.store";
+import { useAdvertisedSkinsStore } from "@/stores/advertised-skins/advertised-skins.store";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import {
@@ -61,6 +62,7 @@ export default function Skins() {
   const commission = isAdvertisement ? price * 0.07 : price * 0.05;
 
   const { skins, loading, setSkins, setLoading, removeSkin } = useSkinsStore();
+  const { updateAdvertisedSkin } = useAdvertisedSkinsStore();
   const [isCooldownActive, setIsCooldownActive] = useState(false);
   const [remainingCooldown, setRemainingCooldown] = useState(0);
   const cooldownIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -157,8 +159,9 @@ export default function Skins() {
         advertising_hours: adHours,
       };
 
-      await skinService.listSkinForSale(selectedSkin._id, skinData); // _id ni birinchi parametr qilib yuboramiz
+      const updatedSkin = await skinService.listSkinForSale(selectedSkin._id, skinData); // _id ni birinchi parametr qilib yuboramiz
       removeSkin(selectedSkin.assetid); // Sotuvga qo'yilgan skinni ro'yxatdan olib tashlash
+      updateAdvertisedSkin(updatedSkin._id, updatedSkin);
       toast.success(`${selectedSkin.market_hash_name} sotuvga qo'yildi!`);
       handleClose();
     } catch (error) {

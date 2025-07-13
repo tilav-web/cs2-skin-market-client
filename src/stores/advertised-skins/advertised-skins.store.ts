@@ -13,6 +13,7 @@ interface AdvertisedSkinsStore {
   setPage: (page: number) => void;
   reset: () => void;
   removeAdvertisedSkin: (skinId: string) => void;
+  updateAdvertisedSkin: (skinId: string, updatedData: Partial<ISkin>) => void;
 }
 
 export const useAdvertisedSkinsStore = create<AdvertisedSkinsStore>((set) => ({
@@ -34,5 +35,11 @@ export const useAdvertisedSkinsStore = create<AdvertisedSkinsStore>((set) => ({
   removeAdvertisedSkin: (skinId) =>
     set((state) => ({
       skins: state.skins.filter((skin) => skin._id !== skinId),
+    })),
+  updateAdvertisedSkin: (skinId, updatedData) =>
+    set((state) => ({
+      skins: state.skins.map((skin) =>
+        skin._id === skinId ? { ...skin, ...updatedData } : skin
+      ),
     })),
 }));
