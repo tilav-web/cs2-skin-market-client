@@ -56,7 +56,7 @@ export const SkinCard = ({
         >
           Sotish
         </Button>
-      ) : (
+      ) : skin.status === "available" && (
         <Button
           asChild
           className="w-full bg-red-500 text-white border border-slate-300 hover:bg-slate-100 h-10 rounded-xl font-bold shadow dark:bg-red-900 dark:text-white dark:border-red-700 dark:hover:bg-red-800"
