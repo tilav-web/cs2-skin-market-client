@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { clientApi } from "@/common/api/client-api";
 import { useUserStore } from "@/stores/auth/user.store";
 import {
   Card,
@@ -12,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { clickService } from "@/services/click.service";
 
 export function DepositPage() {
   const [amount, setAmount] = useState("");
@@ -28,10 +28,9 @@ export function DepositPage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await clientApi.initiateDeposit(+amount);
-      if (response.url) {
-        // Foydalanuvchini Click to'lov sahifasiga yo'naltirish
-        window.open(response.url, '_blank');
+      const response = await clickService.initiateClickPayment(+amount);
+      if (response.payment_url) {
+        window.location.href = response.payment_url;
       }
     } catch (err) {
       setError(

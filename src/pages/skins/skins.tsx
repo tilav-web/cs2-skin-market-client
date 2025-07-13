@@ -161,7 +161,7 @@ export default function Skins() {
       removeSkin(selectedSkin.assetid); // Sotuvga qo'yilgan skinni ro'yxatdan olib tashlash
       toast.success(`${selectedSkin.market_hash_name} sotuvga qo'yildi!`);
       handleClose();
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage = error.response?.data?.message || "Xatolik yuz berdi";
       toast.error(errorMessage);
       console.error(error);

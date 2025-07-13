@@ -1,6 +1,5 @@
 import { privateInstance } from '../common/api/client-api';
 import { endpoints } from '../common/api/endpoints';
-import type { ISkin } from '@/interfaces/skin.interface';
 
 // Serverdagi CreateSkinDto ga mos keladigan tip
 type CreateSkinPayload = {

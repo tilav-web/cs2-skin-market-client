@@ -66,7 +66,7 @@ export default function App() {
         setUser(data)
       }
     })()
-  }, [setUser])
+  }, [setUser, user])
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
