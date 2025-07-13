@@ -12,6 +12,7 @@ interface AdvertisedSkinsStore {
   setLoading: (loading: boolean) => void;
   setPage: (page: number) => void;
   reset: () => void;
+  removeAdvertisedSkin: (skinId: string) => void;
 }
 
 export const useAdvertisedSkinsStore = create<AdvertisedSkinsStore>((set) => ({
@@ -30,4 +31,8 @@ export const useAdvertisedSkinsStore = create<AdvertisedSkinsStore>((set) => ({
   setLoading: (loading) => set({ loading }),
   setPage: (page) => set({ page }),
   reset: () => set({ skins: [], loading: false, page: 1, totalPages: 1, hasMore: true }),
+  removeAdvertisedSkin: (skinId) =>
+    set((state) => ({
+      skins: state.skins.filter((skin) => skin._id !== skinId),
+    })),
 }));

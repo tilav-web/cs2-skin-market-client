@@ -33,6 +33,11 @@ class SkinService {
     const res = await privateInstance.get(`${endpoints.SKINS}/public/${id}`);
     return res.data;
   }
+
+  async cancelSale(skinId: string) {
+    const res = await privateInstance.patch(`${endpoints.SKINS}/${skinId}/cancel-sale`);
+    return res.data;
+  }
 }
 
 export const skinService = new SkinService();
