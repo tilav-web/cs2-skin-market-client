@@ -1,3 +1,5 @@
+import type { ISkin } from "./skin.interface";
+
 export type TransactionType =
   | 'deposit'      // Pul tashlash
   | 'withdraw'     // Pul yechish
