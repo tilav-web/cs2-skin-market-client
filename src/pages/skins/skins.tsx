@@ -149,7 +149,7 @@ export default function Skins() {
     setSelectedSkin(null);
   };
 
-  const handleSell = async () => {
+  const handleSell = useCallback(async () => { // <-- useCallback bilan o'radik
     if (!selectedSkin) return;
     if (price < 0) {
       toast.error("Narx 0 dan katta boʻlishi kerak.");
@@ -177,7 +177,7 @@ export default function Skins() {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [selectedSkin, price, description, isAdvertisement, adHours, updateSkin, updateAdvertisedSkin, handleClose]); // <-- Dependencies
 
   if (!user || !user.steam_id) {
     return (
@@ -266,15 +266,156 @@ export default function Skins() {
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {skins.map((skin) => (
-            <SkinCard
-              key={skin.assetid}
-              skin={skin}
-              onSellClick={handleSellClick} // variant propini olib tashladik
-            />
-          ))}
-        }
-      </div>
+          {skins.map((skin) => {
+            return (
+              <SkinCard
+                key={skin.assetid}
+                skin={skin}
+                onSellClick={handleSellClick}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      <Drawer open={!!selectedSkin} onClose={handleClose}>
+        <DrawerContent>
+          {selectedSkin && (
+            <>
+              <DrawerHeader className="text-left">
+                <DrawerTitle>Skini sotish</DrawerTitle>
+                <DrawerDescription>
+                  {selectedSkin.market_hash_name}
+                  <br />
+                  <span
+                    className={
+                      selectedSkin.tradable ? "text-green-600" : "text-red-600"
+                    }
+                  >
+                    {selectedSkin.tradable ? "Tradable" : "Not Tradable"}
+                  </span>
+                </DrawerDescription>
+              </DrawerHeader>
+              <div className="p-4 flex-1 overflow-y-auto">
+                <div className="flex justify-center items-center h-32">
+                  <img
+                    src={selectedSkin.icon_url}
+                    alt={selectedSkin.market_hash_name}
+                    className="max-w-full max-h-full object-cover"
+                  />
+                </div>
+                <div className="mt-4 space-y-4">
+                  <div>
+                    <Label htmlFor="price" className="text-sm font-medium">
+                      Narx (tilav)
+                    </Label>
+                    <Input
+                      id="price"
+                      type="number"
+                      value={price}
+                      onChange={(e) => setPrice(Number(e.target.value))}
+                      className="mt-1"
+                    />
+                  </div>
+                  {price === 0 && (
+                    <div>
+                      <Label
+                        htmlFor="description"
+                        className="text-sm font-medium"
+                      >
+                        Tavsif (ixtiyoriy)
+                      </Label>
+                      <Textarea
+                        id="description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Tekin skin uchun telegram postiga habar qoldiring..."
+                        className="mt-1"
+                      />
+                    </div>
+                  )}
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="advertisement"
+                      checked={isAdvertisement}
+                      onCheckedChange={(checked) =>
+                        setIsAdvertisement(Boolean(checked))
+                      }
+                      disabled={price === 0}
+                    />
+                    <Label
+                      htmlFor="advertisement"
+                      className="text-sm font-medium"
+                    >
+                      Reklama bo'limiga joylashtirish (komissiya +2%)
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">Telegram kanal topida:</span>
+                    <Select
+                      value={String(adHours)}
+                      onValueChange={(v) => setAdHours(Number(v))}
+                    >
+                      <SelectTrigger className="w-32">
+                        <SelectValue placeholder="Soat tanlang" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 25 }, (_, i) => (
+                          <SelectItem key={i} value={String(i)}>
+                            {i} soat
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="px-2 py-0.5 text-xs bg-slate-100 text-slate-700 mt-1 border border-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700">
+                    Telegram kanalda topda ushlab turish. Soatiga 1000 tilav
+                    olinadi.
+                  </div>
+                  <div className="mt-3 text-sm space-y-1">
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">
+                        Komissiya ({isAdvertisement ? "7%" : "5%"}):
+                      </span>
+                      <span className="font-medium">
+                        {commission.toLocaleString()} tilav
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Reklama narxi:</span>
+                      <span className="font-medium">
+                        {telegramPrice.toLocaleString()} tilav
+                      </span>
+                    </div>
+                    <div className="flex justify-between font-bold">
+                      <span>Siz olasiz:</span>
+                      <span>{(price - commission).toLocaleString()} tilav</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <DrawerFooter className="bg-muted/10 border-t p-4">
+                <Button
+                  onClick={handleSell}
+                  disabled={isSubmitting}
+                  className="text-white font-bold"
+                >
+                  {isSubmitting ? "Yuborilmoqda..." : "Sotish"}
+                </Button>
+                <DrawerClose asChild>
+                  <Button
+                    variant="outline"
+                    onClick={handleClose}
+                    disabled={isSubmitting}
+                  >
+                    Bekor qilish
+                  </Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
