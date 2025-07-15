@@ -1,28 +1,23 @@
 import type { IUser } from "@/interfaces/user.interface";
 import { create } from "zustand";
-import { userService } from "@/services/user.service"; // userService ni import qilamiz
+import { userService } from "@/services/user.service";
 
 interface UserState {
-  user: IUser | null;
-  setUser: (user: IUser) => void;
-  fetchUser: () => Promise<void>; // Yangi funksiya
+  user: IUser | null | undefined; // undefined: yuklanmoqda, null: yuklanmadi/topilmadi, IUser: yuklandi
+  setUser: (user: IUser | null) => void;
+  fetchUser: () => Promise<void>;
 }
 
 export const useUserStore = create<UserState>((set) => ({
-  user: null,
+  user: undefined, // Boshlang'ich qiymat undefined
   setUser: (user) => set({ user }),
   fetchUser: async () => {
     try {
-      const userData = await userService.findMe(); // Serverdan foydalanuvchi ma'lumotlarini olamiz
+      const userData = await userService.findMe();
       set({ user: userData });
     } catch (error) {
       console.error("Failed to fetch user data:", error);
-      set({ user: null }); // Xato bo'lsa user ni null qilamiz
+      set({ user: null }); // Xato bo'lsa null qilamiz
     }
   },
 }));
-
-// Ilova boshlanganda foydalanuvchi ma'lumotlarini yuklash
-// Bu qismni ilovaning asosiy kirish nuqtasida (masalan, App.tsx yoki main.tsx) chaqirish maqsadga muvofiq.
-// Lekin hozircha, oddiylik uchun shu yerda chaqiramiz.
-// useUserStore.getState().fetchUser(); // Bu qatorni App.tsx ichida useEffect bilan chaqirish yaxshiroq

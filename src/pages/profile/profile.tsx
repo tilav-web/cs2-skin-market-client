@@ -70,7 +70,8 @@ export default function Profile() {
       }
     };
 
-    if (user) {
+    // Agar user undefined bo'lmasa (ya'ni yuklanmoqda bo'lmasa) va user mavjud bo'lsa
+    if (user !== undefined && user) {
       fetchTransactions();
     }
   }, [user, setTransactions]);
@@ -81,12 +82,11 @@ export default function Profile() {
   const [isTradeUrlChanged, setIsTradeUrlChanged] = useState(false);
 
   useEffect(() => {
-    (() => {
-      if (!user?.steam_id) {
-        navigate("/auth");
-      }
-    })();
-  }, [navigate, user?.steam_id]);
+    // Agar user undefined bo'lmasa (ya'ni yuklanmoqda bo'lmasa) va user null bo'lsa yoki steam_id yo'q bo'lsa
+    if (user !== undefined && (!user || !user.steam_id)) {
+      navigate("/auth");
+    }
+  }, [navigate, user]); // user.steam_id o'rniga user ni kuzatamiz
 
   // user o'zgarganda tradeUrl ni yangilash
   useEffect(() => {
@@ -103,6 +103,15 @@ export default function Profile() {
     setIsTradeUrlChanged(false);
     // Toast yoki xabar chiqarish mumkin
   };
+
+  // User ma'lumotlari yuklanmoqda bo'lsa (undefined holati)
+  if (user === undefined) {
+    return (
+      <div className="flex justify-center items-center h-full py-12 text-gray-400">
+        Foydalanuvchi ma'lumotlari yuklanmoqda...
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-md mx-auto p-2 flex flex-col gap-4">
@@ -291,13 +300,7 @@ export default function Profile() {
                           ? "text-yellow-600"
                           : "text-red-600"
                       }`}
-                    >
-                      {tx.status === "completed"
-                        ? "Yakunlandi"
-                        : tx.status === "pending"
-                        ? "Kutilmoqda"
-                        : "Bekor qilingan"}
-                    </div>
+                    >Yakunlandi</div>
                   </div>
                 </div>
               );
