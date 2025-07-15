@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, useNavigate } from "react-router-dom"; // useNavigate ni import qilamiz
 import RootLayout from "./layouts/root-layout";
 import { ThemeProvider } from "./components/theme-provider";
 import Auth from "./pages/auth/auth";
@@ -50,17 +50,25 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  const fetchUser = useUserStore((state) => state.fetchUser); // fetchUser ni olamiz
+  const fetchUser = useUserStore((state) => state.fetchUser);
+  const navigate = useNavigate(); // useNavigate hookini olamiz
 
   useEffect(() => {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.requestFullscreen();
       window.Telegram.WebApp.lockOrientation();
+
+      // start_param ni tekshirish
+      const startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
+      if (startParam && startParam.startsWith('skins_buy_')) {
+        const skinId = startParam.replace('skins_buy_', '');
+        navigate(`/skins/buy/${skinId}`);
+      }
     }
-  }, []);
+  }, [navigate]); // navigate ni dependency qilib qo'shamiz
 
   useEffect(() => {
-    fetchUser(); // Ilova yuklanganda foydalanuvchi ma'lumotlarini yuklaymiz
+    fetchUser();
   }, [fetchUser]);
 
   return (

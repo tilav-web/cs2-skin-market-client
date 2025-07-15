@@ -25,6 +25,7 @@ interface WebAppData {
   chat?: WebAppChat; // Chat ma'lumotlari (ixtiyoriy)
   auth_date: number; // Autentifikatsiya sanasi (Unix timestamp)
   hash: string; // Ma'lumotlarning xavfsizlik xeshi
+  start_param?: string; // Yangi: start_param
 }
 
 interface MainButton {
