@@ -35,8 +35,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { RefreshCw } from "lucide-react";
-import { useUserStore } from "@/stores/auth/user.store"; // useUserStore ni import qilamiz
-import { Link } from "react-router-dom"; // Link ni import qilamiz
+import { useUserStore } from "@/stores/auth/user.store";
+import { Link } from "react-router-dom";
 
 // Cooldown constants
 const LAST_REFRESH_TIMESTAMP_KEY = "skins_last_refresh";
@@ -59,14 +59,14 @@ export default function Skins() {
   const [adHours, setAdHours] = useState(0);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasFetchedInitialSkins, setHasFetchedInitialSkins] = useState(false); // Yangi holat
+  const [hasFetchedInitialSkins, setHasFetchedInitialSkins] = useState(false);
 
   const telegramPrice = adHours > 0 ? adHours * 1000 : 0;
   const commission = isAdvertisement ? price * 0.07 : price * 0.05;
 
-  const { skins, loading, setSkins, setLoading, removeSkin } = useSkinsStore();
+  const { skins, loading, setSkins, setLoading, updateSkin } = useSkinsStore(); // removeSkin o'rniga updateSkin ni olamiz
   const { updateAdvertisedSkin } = useAdvertisedSkinsStore();
-  const { user } = useUserStore(); // User ma'lumotini olamiz
+  const { user } = useUserStore();
 
   const [isCooldownActive, setIsCooldownActive] = useState(false);
   const [remainingCooldown, setRemainingCooldown] = useState(0);
@@ -118,7 +118,7 @@ export default function Skins() {
       try {
         const data = await userService.findMySkins(refresh);
         setSkins(data);
-        setHasFetchedInitialSkins(true); // Muvaffaqiyatli yuklanganda true ga o'rnatamiz
+        setHasFetchedInitialSkins(true);
       } catch (error: unknown) {
         setFetchError(
           "Hozircha skinlarni olish imkoni yo'q. Bu ko'pincha Steam API so'rovlar ko'pligi sababli vaqtincha cheklov qo'yilgani uchun yuz beradi. Iltimos, birozdan so'ng qayta urinib ko'ring."
@@ -132,7 +132,6 @@ export default function Skins() {
   );
 
   useEffect(() => {
-    // Faqat birinchi marta yuklashda va skinlar bo'sh bo'lsa so'rov yuboramiz
     if (!hasFetchedInitialSkins && skins.length === 0) {
       fetchSkins(false);
     }
@@ -167,7 +166,7 @@ export default function Skins() {
       };
 
       const updatedSkin = await skinService.listSkinForSale(selectedSkin._id, skinData);
-      removeSkin(selectedSkin.assetid);
+      updateSkin(selectedSkin._id, updatedSkin); // removeSkin o'rniga updateSkin ni chaqiramiz
       updateAdvertisedSkin(updatedSkin._id, updatedSkin);
       toast.success(`${selectedSkin.market_hash_name} sotuvga qo'yildi!`);
       handleClose();
@@ -180,7 +179,6 @@ export default function Skins() {
     }
   };
 
-  // Steam ID tekshiruvi
   if (!user || !user.steam_id) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-4 text-center">
