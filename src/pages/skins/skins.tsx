@@ -12,11 +12,11 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea"; // Textarea ni import qilamiz
+import { Textarea } from "@/components/ui/textarea";
 import coinSub from "@/assets/coin-sub.png";
 import { toast } from "sonner";
 import { userService } from "@/services/user.service";
-import { skinService } from "@/services/skin.service"; // skinService ni import qilamiz
+import { skinService } from "@/services/skin.service";
 import { useSkinsStore } from "@/stores/skins/skins.store";
 import { useAdvertisedSkinsStore } from "@/stores/advertised-skins/advertised-skins.store";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -34,7 +34,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { RefreshCw } from "lucide-react"; // Refresh icon
+import { RefreshCw } from "lucide-react";
+import { useUserStore } from "@/stores/auth/user.store"; // useUserStore ni import qilamiz
+import { Link } from "react-router-dom"; // Link ni import qilamiz
 
 // Cooldown constants
 const LAST_REFRESH_TIMESTAMP_KEY = "skins_last_refresh";
@@ -52,17 +54,20 @@ function formatTime(ms: number) {
 export default function Skins() {
   const [selectedSkin, setSelectedSkin] = useState<ISkin | null>(null);
   const [price, setPrice] = useState(0);
-  const [description, setDescription] = useState(""); // Description uchun state
+  const [description, setDescription] = useState("");
   const [isAdvertisement, setIsAdvertisement] = useState(false);
   const [adHours, setAdHours] = useState(0);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasFetchedInitialSkins, setHasFetchedInitialSkins] = useState(false); // Yangi holat
 
   const telegramPrice = adHours > 0 ? adHours * 1000 : 0;
   const commission = isAdvertisement ? price * 0.07 : price * 0.05;
 
   const { skins, loading, setSkins, setLoading, removeSkin } = useSkinsStore();
   const { updateAdvertisedSkin } = useAdvertisedSkinsStore();
+  const { user } = useUserStore(); // User ma'lumotini olamiz
+
   const [isCooldownActive, setIsCooldownActive] = useState(false);
   const [remainingCooldown, setRemainingCooldown] = useState(0);
   const cooldownIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -113,6 +118,7 @@ export default function Skins() {
       try {
         const data = await userService.findMySkins(refresh);
         setSkins(data);
+        setHasFetchedInitialSkins(true); // Muvaffaqiyatli yuklanganda true ga o'rnatamiz
       } catch (error: unknown) {
         setFetchError(
           "Hozircha skinlarni olish imkoni yo'q. Bu ko'pincha Steam API so'rovlar ko'pligi sababli vaqtincha cheklov qo'yilgani uchun yuz beradi. Iltimos, birozdan so'ng qayta urinib ko'ring."
@@ -126,10 +132,11 @@ export default function Skins() {
   );
 
   useEffect(() => {
-    if (skins.length === 0) {
+    // Faqat birinchi marta yuklashda va skinlar bo'sh bo'lsa so'rov yuboramiz
+    if (!hasFetchedInitialSkins && skins.length === 0) {
       fetchSkins(false);
     }
-  }, [skins.length, fetchSkins]);
+  }, [skins.length, fetchSkins, hasFetchedInitialSkins]);
 
   const handleSellClick = (skin: ISkin) => {
     setSelectedSkin(skin);
@@ -154,13 +161,13 @@ export default function Skins() {
     try {
       const skinData = {
         price,
-        description: price === 0 ? description : undefined, // Faqat narx 0 bo'lsa description yuboriladi
+        description: price === 0 ? description : undefined,
         advertising: isAdvertisement,
         advertising_hours: adHours,
       };
 
-      const updatedSkin = await skinService.listSkinForSale(selectedSkin._id, skinData); // _id ni birinchi parametr qilib yuboramiz
-      removeSkin(selectedSkin.assetid); // Sotuvga qo'yilgan skinni ro'yxatdan olib tashlash
+      const updatedSkin = await skinService.listSkinForSale(selectedSkin._id, skinData);
+      removeSkin(selectedSkin.assetid);
       updateAdvertisedSkin(updatedSkin._id, updatedSkin);
       toast.success(`${selectedSkin.market_hash_name} sotuvga qo'yildi!`);
       handleClose();
@@ -173,21 +180,33 @@ export default function Skins() {
     }
   };
 
+  // Steam ID tekshiruvi
+  if (!user || !user.steam_id) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-4 text-center">
+        <h2 className="text-2xl font-bold mb-4">Ro'yxatdan o'tish kerak</h2>
+        <p className="text-gray-600 mb-6">
+          Skinlaringizni ko'rish va sotish uchun Steam hisobingizni ulashingiz kerak.
+        </p>
+        <Link to="/auth">
+          <Button>Ro'yxatdan o'tish</Button>
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
       <div className="flex flex-col items-center mb-4">
         {" "}
-        {/* Added relative for positioning */}
         <img src={coinSub} alt="Tilav Coin" className="w-24 h-24" />
         <p className="font-bold text-xl mt-2">Tilav coin</p>
         <p className="text-center text-sm text-gray-500 px-4">
           Bu yerda siz o'z skinlaringizni sotishingiz mumkin. Barcha savdolar
           "tilav coin"da amalga oshiriladi. <strong>1 so'm = 1 tilav.</strong>
         </p>
-        {/* Refresh Button */}
         <div className="absolute top-0 right-0 mt-2 mr-2">
           {" "}
-          {/* Positioned top-right */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -323,7 +342,7 @@ export default function Skins() {
                       onCheckedChange={(checked) =>
                         setIsAdvertisement(Boolean(checked))
                       }
-                      disabled={price === 0} // Narx 0 bo'lsa o'chiriladi
+                      disabled={price === 0}
                     />
                     <Label
                       htmlFor="advertisement"
