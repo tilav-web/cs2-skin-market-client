@@ -11,7 +11,6 @@ import { DepositPage } from "./pages/profile/deposit";
 import { Toaster } from "@/components/ui/sonner";
 import { useEffect } from "react";
 import { useUserStore } from "./stores/auth/user.store";
-import { userService } from "./services/user.service";
 
 const router = createBrowserRouter([
   {
@@ -51,7 +50,8 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  const { setUser, user } = useUserStore()
+  const fetchUser = useUserStore((state) => state.fetchUser); // fetchUser ni olamiz
+
   useEffect(() => {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.requestFullscreen();
@@ -60,13 +60,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      if(!user) {
-        const data = await userService.findMe()
-        setUser(data)
-      }
-    })()
-  }, [setUser, user])
+    fetchUser(); // Ilova yuklanganda foydalanuvchi ma'lumotlarini yuklaymiz
+  }, [fetchUser]);
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
