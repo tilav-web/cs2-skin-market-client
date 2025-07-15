@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import type { ISkin } from "@/interfaces/skin.interface";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom"; // useLocation ni import qilamiz
 import coinMain from '@/assets/coin-main.png'
 import {
   Drawer,
@@ -20,17 +20,18 @@ import { useAdvertisedSkinsStore } from "@/stores/advertised-skins/advertised-sk
 
 interface SkinCardProps {
   skin: ISkin;
-  variant?: "buy" | "sell";
+  // variant?: "buy" | "sell"; // variant propini olib tashladik
   onSellClick?: (skin: ISkin) => void;
 }
 
 export const SkinCard = ({
   skin,
-  variant = "buy",
+  // variant = "buy", // variant propini olib tashladik
   onSellClick,
 }: SkinCardProps) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { updateAdvertisedSkin } = useAdvertisedSkinsStore();
+  const location = useLocation(); // useLocation hookini olamiz
 
   const handleCancelSale = async () => {
     try {
@@ -44,10 +45,13 @@ export const SkinCard = ({
     }
   };
 
+  // Joriy yo'l /skins ekanligini tekshiramiz
+  const isSkinsPage = location.pathname === '/skins';
+
   return (
     <Card
       className={cn(
-        "relative flex flex-col gap-2 text-center rounded-xl shadow-lg border border-slate-200 bg-gradient-to-b from-white/80 to-slate-200/60 p-3 min-h-0 select-auto transition-transform overflow-hidden",
+        "relative flex flex-col gap-2 text-center rounded-xl shadow-lg border border-slate-200 bg-gradient-to-b from-white/80 to-slate-220/60 p-3 min-h-0 select-auto transition-transform overflow-hidden",
         "dark:border-slate-700 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-800/60"
       )}
     >
@@ -75,9 +79,9 @@ export const SkinCard = ({
           </span>
         )}
       </div>
-      {/* Sell/Buy Button */}
+      {/* Buttons based on context */}
       <div className="mt-3">
-        {variant === "sell" && skin.tradable && skin.status === "available" ? (
+        {isSkinsPage && skin.tradable && skin.status === "available" ? (
           <Button
             className="w-full bg-white text-black border border-slate-300 hover:bg-slate-100 h-10 rounded-xl font-bold shadow dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:hover:bg-slate-800"
             onClick={() => onSellClick?.(skin)}
@@ -85,7 +89,7 @@ export const SkinCard = ({
           >
             Sotish
           </Button>
-        ) : skin.status === "pending" ? (
+        ) : isSkinsPage && skin.status === "pending" ? (
           <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
             <DrawerTrigger asChild>
               <Button className="w-full bg-red-500 text-white border border-slate-300 hover:bg-red-600 h-10 rounded-xl font-bold shadow dark:bg-red-900 dark:text-white dark:border-red-700 dark:hover:bg-red-800">
@@ -107,8 +111,7 @@ export const SkinCard = ({
               </DrawerFooter>
             </DrawerContent>
           </Drawer>
-        ) : null}
-        {variant === "buy" && skin.tradable && typeof skin.price === "number" && (
+        ) : skin.tradable && typeof skin.price === "number" ? (
           <Button
             asChild
             className="w-full bg-white text-black border border-slate-300 hover:bg-slate-100 h-10 rounded-xl font-bold shadow dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:hover:bg-slate-800"
@@ -118,7 +121,7 @@ export const SkinCard = ({
               {skin.price.toLocaleString()}
             </Link>
           </Button>
-        )}
+        ) : null}
       </div>
     </Card>
   );

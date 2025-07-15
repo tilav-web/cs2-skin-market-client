@@ -76,7 +76,7 @@ export default function MainPage() {
             <Badge className="absolute left-2 top-2 z-10 text-white font-bold">
               reklama
             </Badge>
-            <SkinCard skin={skin} />
+            <SkinCard skin={skin} /> {/* variant propini olib tashladik */}
           </div>
         ))}
       </div>
