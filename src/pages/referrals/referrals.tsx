@@ -3,38 +3,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useUserStore } from "@/stores/auth/user.store";
 import { ClipboardCopy, Send } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-// TODO: Fetch real data from backend
-const referredUsers = [
-  {
-    id: "123456",
-    personaname: "Friend 1",
-    photo: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    joinDate: "2024-07-28",
-  },
-  {
-    id: "789012",
-    personaname: "Friend 2",
-    photo: "https://i.pravatar.cc/150?u=a042581f4e29026705d",
-    joinDate: "2024-07-27",
-  },
-];
+import { useReferralsStore } from "@/stores/referrals/referrals.store";
+import { botUsername } from "@/common/utils/shared";
 
 export default function Referrals() {
   const user = useUserStore((state) => state.user);
+  const { referredUsers, isLoading, fetchReferrals } = useReferralsStore();
 
-  // TODO: Replace 'YOUR_BOT_USERNAME' with your actual bot username
-  const botUsername = "YOUR_BOT_USERNAME";
+  useEffect(() => {
+    fetchReferrals();
+  }, [fetchReferrals]);
 
   const referralLink = useMemo(() => {
     if (user?.telegram_id) {
       return `https://t.me/${botUsername}?start=${user.telegram_id}`;
     }
     return "";
-  }, [user?.telegram_id]);
+  }, [user?.telegram_id, botUsername]);
 
   const copyToClipboard = () => {
     if (!referralLink) return;
@@ -48,7 +36,7 @@ export default function Referrals() {
     const url = `https://t.me/share/url?url=${encodeURIComponent(
       referralLink
     )}&text=${encodeURIComponent(text)}`;
-    window.open(url, "_blank");
+    window.open(url);
   };
 
   return (
@@ -60,8 +48,8 @@ export default function Referrals() {
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
             Ushbu havola orqali do'stlaringizni taklif qiling va bonuslarga ega
-            bo'ling. Har bir taklif qilingan do'stingiz uchun sizga 500 tilav coin
-            bonus beriladi.
+            bo'ling. Har bir taklif qilingan do'stingiz uchun sizga 500 tilav
+            coin bonus beriladi.
           </p>
           <div className="flex items-center space-x-2">
             <Input
@@ -94,7 +82,11 @@ export default function Referrals() {
           <CardTitle>Taklif qilingan do'stlar</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {referredUsers.length === 0 ? (
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground text-center">
+              Yuklanmoqda...
+            </p>
+          ) : referredUsers.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center">
               Siz hali hech kimni taklif qilmagansiz.
             </p>
@@ -119,7 +111,7 @@ export default function Referrals() {
                   </div>
                   <div className="flex flex-col items-end">
                     <span className="text-sm text-muted-foreground">
-                      {friend.joinDate}
+                      {new Date(friend.joinDate).toLocaleDateString()}
                     </span>
                     <span className="text-green-600 font-semibold text-xs">
                       +500 tilav

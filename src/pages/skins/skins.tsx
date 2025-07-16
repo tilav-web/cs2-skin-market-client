@@ -118,7 +118,6 @@ export default function Skins() {
       try {
         const data = await userService.findMySkins(refresh);
         setSkins(data);
-        setHasFetchedInitialSkins(true);
       } catch (error: unknown) {
         setFetchError(
           "Hozircha skinlarni olish imkoni yo'q. Bu ko'pincha Steam API so'rovlar ko'pligi sababli vaqtincha cheklov qo'yilgani uchun yuz beradi. Iltimos, birozdan so'ng qayta urinib ko'ring."
@@ -126,6 +125,7 @@ export default function Skins() {
         console.error(error);
       } finally {
         setLoading(false);
+        setHasFetchedInitialSkins(true);
       }
     },
     [setSkins, setLoading, setFetchError, checkCooldown, remainingCooldown]
