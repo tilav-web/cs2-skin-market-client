@@ -21,6 +21,7 @@ export function AppInitHandler() {
 
   useEffect(() => {
     fetchUser();
+    console.log("User data fetched on app init");
   }, [fetchUser]);
 
   return null;
