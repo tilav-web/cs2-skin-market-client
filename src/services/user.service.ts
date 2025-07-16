@@ -5,6 +5,7 @@ class UserService {
   async findMe() {
     try {
       const res = await privateInstance.get(`${endpoints.USERS}/find/me`);
+      console.log(res.data);
       return res.data;
     } catch (error) {
       console.error(error);

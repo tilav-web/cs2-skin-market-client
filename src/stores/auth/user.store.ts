@@ -14,6 +14,7 @@ export const useUserStore = create<UserState>((set) => ({
   fetchUser: async () => {
     try {
       const userData = await userService.findMe();
+      
       set({ user: userData });
     } catch (error) {
       console.error("Failed to fetch user data:", error);
