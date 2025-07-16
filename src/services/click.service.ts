@@ -8,7 +8,7 @@ class ClickService {
       endpoints.CLICK.INITIATE_DEPOSIT,
       { amount }
     )
-    return res.data // { payment_url: 'https://my.click.uz/services/pay?...' }
+    return res.data
   }
 }
 

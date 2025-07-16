@@ -144,7 +144,7 @@ export default function Profile() {
             </CardDescription>
           </div>
         </CardHeader>
-        <CardContent className="p-4 grid gap-3">
+        <CardContent className="p-4 flex flex-col gap-4 w-full">
           <div className="flex items-center gap-3 rounded-lg border p-3">
             <Phone className="h-5 w-5 text-muted-foreground" />
             <div>
@@ -154,7 +154,7 @@ export default function Profile() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-lg border p-3 justify-between">
+          <div className="flex items-center gap-3 rounded-lg border p-3">
             <div className="flex items-center gap-3">
               <HandCoins className="h-5 w-5 text-muted-foreground" />
               <div>

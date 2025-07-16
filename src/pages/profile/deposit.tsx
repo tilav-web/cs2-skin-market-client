@@ -42,9 +42,9 @@ export function DepositPage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await clickService.initiateClickDeposit(+amount);
-      if (response.payment_url) {
-        window.location.href = response.payment_url;
+      const data = await clickService.initiateClickDeposit(+amount);
+      if (data.payment_url) {
+        window.location.href = data.payment_url;
       }
     } catch (err) {
       setError(
