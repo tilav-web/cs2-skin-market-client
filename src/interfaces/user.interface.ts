@@ -6,6 +6,7 @@ export interface IUser {
   personaname?: string;
   trade_url?: string;
   action?: string;
-  status: 'active' | 'not_active' | 'block';
+  status: "active" | "not_active" | "block";
   balance: number;
+  cashback: number;
 }

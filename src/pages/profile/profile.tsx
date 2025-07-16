@@ -123,7 +123,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto p-2 flex flex-col gap-4">
+    <div className="w-full max-w-md mx-auto p-1 flex flex-col gap-2">
       <Card className="overflow-hidden shadow-lg">
         <CardHeader className="flex flex-row items-center gap-3 bg-muted/30 p-4">
           <Avatar className="h-14 w-14 border-2 border-primary/50">
@@ -151,6 +151,18 @@ export default function Profile() {
               <p className="font-semibold text-sm">
                 {user?.phone || "Kiritilmagan"}
               </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 rounded-lg border p-3 justify-between">
+            <div className="flex items-center gap-3">
+              <Wallet className="h-5 w-5 text-muted-foreground" />
+              <div>
+                <p className="text-xs text-muted-foreground">Cashback</p>
+                <p className="font-semibold flex items-center gap-1 text-base">
+                  <img src={coinMain} alt="Tilav Coin" className="w-4 h-4" />
+                  {formatBalance(user?.cashback ?? 0)} tilav
+                </p>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3 rounded-lg border p-3 justify-between">
