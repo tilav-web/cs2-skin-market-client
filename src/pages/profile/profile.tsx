@@ -17,6 +17,7 @@ import {
   Wallet,
   ArrowDownCircle,
   ArrowUpCircle,
+  HandCoins,
 } from "lucide-react";
 import type { ITransaction } from "@/interfaces/transaction.interface";
 import coinMain from "@/assets/coin-main.png";
@@ -155,7 +156,7 @@ export default function Profile() {
           </div>
           <div className="flex items-center gap-3 rounded-lg border p-3 justify-between">
             <div className="flex items-center gap-3">
-              <Wallet className="h-5 w-5 text-muted-foreground" />
+              <HandCoins className="h-5 w-5 text-muted-foreground" />
               <div>
                 <p className="text-xs text-muted-foreground">Cashback</p>
                 <p className="font-semibold flex items-center gap-1 text-base">

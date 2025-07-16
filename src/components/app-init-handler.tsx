@@ -12,9 +12,12 @@ export function AppInitHandler() {
       window.Telegram.WebApp.lockOrientation();
 
       const startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
-      if (startParam && startParam.startsWith('skins_buy_')) {
-        const skinId = startParam.replace('skins_buy_', '');
+      if (startParam && startParam.startsWith("skins_buy_")) {
+        const skinId = startParam.replace("skins_buy_", "");
         navigate(`/skins/buy/${skinId}`);
+      }
+      if (startParam && startParam === "profile") {
+        navigate("/profile");
       }
     }
   }, [navigate]);
