@@ -24,8 +24,11 @@ import { useEffect, useState, type ElementType } from "react";
 import { useNavigate } from "react-router-dom";
 import { Textarea } from "@/components/ui/textarea";
 import { formatBalance } from "@/lib/utils";
+import { toast } from "sonner";
+import { userService } from "@/services/user.service";
 
 const STEAM_PRIVACY_URL = "https://steamcommunity.com/my/edit/settings";
+const STEAM_TRADE_URL = "https://steamcommunity.com/my/tradeoffers/privacy";
 
 // MOCK TRANSACTIONS
 const typeMap: Record<
@@ -95,13 +98,19 @@ export default function Profile() {
     setIsEditingTradeUrl(false);
   }, [user?.trade_url]);
 
-  // Trade URL ni saqlash funksiyasi (hozircha faqat frontda)
-  const handleSaveTradeUrl = () => {
-    // TODO: API chaqiruv qilish mumkin
-    // Masalan: updateUser({ trade_url: tradeUrl })
-    setIsEditingTradeUrl(false);
-    setIsTradeUrlChanged(false);
-    // Toast yoki xabar chiqarish mumkin
+  // Trade URL ni saqlash funksiyasi
+  const handleSaveTradeUrl = async () => {
+    if (!user) return;
+    try {
+      const updatedUser = await userService.updateTradeUrl(tradeUrl);
+      useUserStore.setState({ user: updatedUser }); // User store'ni yangilash
+      toast.success("Trade URL muvaffaqiyatli saqlandi!");
+      setIsEditingTradeUrl(false);
+      setIsTradeUrlChanged(false);
+    } catch (error) {
+      console.error("Trade URLni saqlashda xatolik yuz berdi:", error);
+      toast.error("Trade URLni saqlashda xatolik yuz berdi.");
+    }
   };
 
   // User ma'lumotlari yuklanmoqda bo'lsa (undefined holati)
@@ -210,14 +219,22 @@ export default function Profile() {
         </CardContent>
         <CardFooter className="bg-muted/30 p-4">
           <p className="text-sm text-muted-foreground">
-            Skin savdosi uchun Steam inventar profilingiz ochiq bo'lishi kerak.
+            Skin savdosi uchun Steam inventar profilingiz ochiq bo'lishi kerak va trade url kerak bo'ladi.
             <a
               href={STEAM_PRIVACY_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline ml-1"
             >
-              Sozlamalarga o'tish
+              Profilni public qilish
+            </a>
+            <a
+              href={STEAM_TRADE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline ml-1"
+            >
+              Trade url olish
             </a>
           </p>
         </CardFooter>

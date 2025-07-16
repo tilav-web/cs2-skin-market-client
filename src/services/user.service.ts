@@ -23,6 +23,15 @@ class UserService {
     }
   }
 
+  async updateTradeUrl(tradeUrl: string) {
+    try {
+      const res = await privateInstance.put(`${endpoints.USERS}/trade-url`, { tradeUrl });
+      return res.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 }
 
 export const userService = new UserService();
