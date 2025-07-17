@@ -1,3 +1,5 @@
+import type { IUser } from "./user.interface";
+
 export interface ISkin {
   _id: string;
   assetid: string;
@@ -7,7 +9,7 @@ export interface ISkin {
   icon_url: string;
   tradable: boolean;
   price: number;
-  user: string;
+  user: IUser;
   advertising: boolean;
   status: "available" | "pending" | "sold" | "canceled";
   buyer: string | null;

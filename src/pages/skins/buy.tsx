@@ -32,10 +32,11 @@ export default function BuySkinPage() {
     );
 
   // Telegram post link if message_id exists
-  let telegramPostUrl: string | null = null;
-  if (skin.message_id) {
-    telegramPostUrl = `https://t.me/c/${skin.message_id.replace("-100", "")}`;
-  }
+  const getTelegramLink = (message_id: number | null) => {
+    if (!message_id) return "#";
+    const GROUP_ID = import.meta.env.VITE_TELEGRAM_GROUP_ID; // .env fayldan olinadi
+    return `https://t.me/c/${GROUP_ID.replace("-100", "")}/${message_id}`;
+  };
   const holat =
     skin.status === "sold"
       ? "sotilgan"
@@ -76,11 +77,11 @@ export default function BuySkinPage() {
                   <p className="py-2 px-3 font-medium">Egasi</p>
                   <p className="py-2 px-3 flex items-center gap-1">
                     <img
-                      src="https://avatars.githubusercontent.com/u/583231?v=4"
+                      src={skin.user?.photo || ""}
                       alt="Tilav"
                       className="w-6 h-6 rounded-full"
                     />
-                    Tilav
+                    {skin.user?.personaname || "Noma'lum"}
                   </p>
                 </div>
                 <div className="border-b border-gray-700 flex items-center justify-between">
@@ -99,10 +100,15 @@ export default function BuySkinPage() {
                   <p className="py-2 px-3">{holat}</p>
                 </div>
                 <div className="border-b border-gray-700 flex items-center justify-between">
-                  <p className="py-2 px-3 font-medium">
-                    Telegram channel
-                  </p>
-                  <Link className="py-2 px-3" to={telegramPostUrl ?? ""}>post</Link>
+                  <p className="py-2 px-3 font-medium">Telegram channel</p>
+                  <Link
+                    className="py-2 px-3"
+                    to={getTelegramLink(
+                      skin.message_id ? parseInt(skin.message_id) : null
+                    )}
+                  >
+                    {skin.message_id ? "👀" : "Noma'lum"}
+                  </Link>
                 </div>
               </div>
             </table>
@@ -112,7 +118,7 @@ export default function BuySkinPage() {
       {/* Sticky buy button */}
       <div className="fixed bottom-0 left-0 w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 p-4 z-50 flex justify-center pb-22">
         <Button
-          className="w-full max-w-sm font-bold text-white bg-green-600 hover:bg-green-700 text-lg py-4 rounded-xl shadow-xl"
+          className="w-full bg-white text-black border border-slate-300 hover:bg-slate-100 h-10 rounded-xl font-bold shadow dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:hover:bg-slate-800"
           disabled={skin.status !== "pending"}
         >
           Sotib olish

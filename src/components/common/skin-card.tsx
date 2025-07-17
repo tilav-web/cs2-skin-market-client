@@ -3,7 +3,7 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import type { ISkin } from "@/interfaces/skin.interface";
 import { Link, useLocation } from "react-router-dom"; // useLocation ni import qilamiz
-import coinMain from '@/assets/coin-main.png'
+import coinMain from "@/assets/coin-main.png";
 import {
   Drawer,
   DrawerContent,
@@ -46,7 +46,7 @@ export const SkinCard = ({
   };
 
   // Joriy yo'l /skins ekanligini tekshiramiz
-  const isSkinsPage = location.pathname === '/skins';
+  const isSkinsPage = location.pathname === "/skins";
 
   return (
     <Card
@@ -104,10 +104,18 @@ export const SkinCard = ({
                 </DrawerDescription>
               </DrawerHeader>
               <DrawerFooter>
-                <Button variant="outline" onClick={() => setIsDrawerOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsDrawerOpen(false)}
+                >
                   Bekor qilish
                 </Button>
-                <Button onClick={handleCancelSale}>Tasdiqlash</Button>
+                <Button
+                  onClick={handleCancelSale}
+                  className="text-white font-bold"
+                >
+                  Tasdiqlash
+                </Button>
               </DrawerFooter>
             </DrawerContent>
           </Drawer>
@@ -116,8 +124,15 @@ export const SkinCard = ({
             asChild
             className="w-full bg-white text-black border border-slate-300 hover:bg-slate-100 h-10 rounded-xl font-bold shadow dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:hover:bg-slate-800"
           >
-            <Link className="flex items-center gap-1" to={`/skins/buy/${skin._id}`}>
-              <img className="w-4 h-4" src={coinMain} alt={skin.market_hash_name} />
+            <Link
+              className="flex items-center gap-1"
+              to={`/skins/buy/${skin._id}`}
+            >
+              <img
+                className="w-4 h-4"
+                src={coinMain}
+                alt={skin.market_hash_name}
+              />
               {skin.price.toLocaleString()}
             </Link>
           </Button>
