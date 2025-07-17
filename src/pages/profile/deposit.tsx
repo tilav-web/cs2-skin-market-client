@@ -82,13 +82,18 @@ export function DepositPage() {
                   onChange={(e) => setAmount(e.target.value)}
                   disabled={loading}
                   min="1000"
+                  step="1000"
                 />
               </div>
               {error && <p className="text-red-500 text-sm">{error}</p>}
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full text-white font-bold"
+              disabled={loading}
+            >
               {loading ? "Kuting..." : "To'lov qilish"}
             </Button>
           </CardFooter>
