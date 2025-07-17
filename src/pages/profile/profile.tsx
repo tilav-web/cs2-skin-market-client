@@ -81,7 +81,7 @@ export default function Profile() {
   }, [user, setTransactions]);
 
   // Trade URL uchun state
-  const [tradeUrl, setTradeUrl] = useState(user?.trade_url || "");
+  const [tradeUrl, setTradeUrl] = useState(user?.trade_url?.value || "");
   const [isEditingTradeUrl, setIsEditingTradeUrl] = useState(false);
   const [isTradeUrlChanged, setIsTradeUrlChanged] = useState(false);
 
@@ -94,10 +94,10 @@ export default function Profile() {
 
   // user o'zgarganda tradeUrl ni yangilash
   useEffect(() => {
-    setTradeUrl(user?.trade_url || "");
+    setTradeUrl(user?.trade_url?.value || "");
     setIsTradeUrlChanged(false);
     setIsEditingTradeUrl(false);
-  }, [user?.trade_url]);
+  }, [user?.trade_url?.value]);
 
   // Trade URL ni saqlash funksiyasi
   const handleSaveTradeUrl = async () => {
@@ -207,18 +207,21 @@ export default function Profile() {
             </label>
             <Textarea
               id="trade-url"
-              className="resize-none min-h-[40px] text-sm focus:outline-primary"
+              className={`resize-none min-h-[40px] text-sm focus:outline-primary ${!user?.trade_url?.status && user?.trade_url?.value ? 'border-red-500' : ''}`}
               value={tradeUrl}
               placeholder="Trade URL kiriting"
               onFocus={() => setIsEditingTradeUrl(true)}
               onChange={(e) => {
                 setTradeUrl(e.target.value);
                 setIsTradeUrlChanged(
-                  e.target.value !== (user?.trade_url || "")
+                  e.target.value !== (user?.trade_url?.value || "")
                 );
               }}
               disabled={!user?.steam_id}
             />
+            {!user?.trade_url?.status && user?.trade_url?.value && (
+              <p className="text-xs text-red-500 mt-1">Trade URL ni o'zgartiring</p>
+            )}
             {isEditingTradeUrl && isTradeUrlChanged && (
               <Button
                 size="sm"

@@ -4,6 +4,7 @@ import axios, {
   type InternalAxiosRequestConfig,
 } from "axios";
 import { serverUrl } from "../utils/shared";
+import { endpoints } from "./endpoints";
 
 const responseInstance = (instance: AxiosInstance) => {
   instance.interceptors.response.use(
@@ -63,5 +64,9 @@ requestInstance({
     Authorization: window.Telegram?.WebApp.initData
   } as AxiosRequestHeaders,
 });
+
+export const updateTradeUrl = (tradeUrl: string) => {
+  return privateInstance.put(endpoints.UPDATE_TRADE_URL, { tradeUrl });
+};
 
 export { privateInstance, privateInstanceFile };
