@@ -21,4 +21,14 @@ export const transactionService = {
       throw error;
     }
   },
+
+  buySkin: async (skinId: string) => {
+    try {
+      const res = await privateInstance.post(endpoints.TRANSACTIONS + `/buy/${skinId}`);
+      return res.data;
+    } catch (error) {
+      console.error("Error buying skin:", error);
+      throw error;
+    }
+  },
 };

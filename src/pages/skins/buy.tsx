@@ -6,12 +6,16 @@ import type { ISkin } from "@/interfaces/skin.interface";
 import { skinService } from "@/services/skin.service";
 import coinMain from "@/assets/coin-main.png";
 import { channelId } from "@/common/utils/shared";
+import { useUserStore } from "@/stores/auth/user.store";
+import { toast } from "sonner";
+import { transactionService } from "@/services/transaction.service";
 
 export default function BuySkinPage() {
   const { id } = useParams<{ id: string }>();
   const [skin, setSkin] = useState<ISkin | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user, fetchUser } = useUserStore();
 
   useEffect(() => {
     if (!id) return;
@@ -23,6 +27,41 @@ export default function BuySkinPage() {
       .catch(() => setError("Skin topilmadi"))
       .finally(() => setLoading(false));
   }, [id]);
+
+  const handleBuySkin = async () => {
+    if (!user) {
+      toast.error("Foydalanuvchi ma'lumotlari yuklanmagan.");
+      return;
+    }
+
+    if (!user.steam_id) {
+      toast.error("Davom etish uchun Steam akkauntingizni bog'lang.");
+      return;
+    }
+
+    if (!user.phone) {
+      toast.error("Davom etish uchun telefon raqamingizni tasdiqlang.");
+      return;
+    }
+
+    if (!user.trade_url || !user.trade_url.value) {
+      toast.error("Davom etish uchun Trade URL manzilingizni kiriting.");
+      return;
+    }
+
+    if (skin) {
+      try {
+        await transactionService.buySkin(skin._id);
+        toast.success("Skin muvaffaqiyatli sotib olindi!");
+        fetchUser(); // Foydalanuvchi balansini yangilash
+        // Skin ma'lumotlarini yangilash (status va egasi o'zgargan bo'lishi kerak)
+        skinService.getSkinById(skin._id).then(setSkin);
+      } catch (err: any) {
+        const errorMessage = err.response?.data?.message || "Skinni sotib olishda xatolik yuz berdi.";
+        toast.error(errorMessage);
+      }
+    }
+  };
 
   if (loading) return <div className="text-center mt-10">Yuklanmoqda...</div>;
   if (error || !skin)
@@ -121,6 +160,7 @@ export default function BuySkinPage() {
         <Button
           className="w-full bg-white text-black border border-slate-300 hover:bg-slate-100 h-10 rounded-xl font-bold shadow dark:bg-slate-900 dark:text-white dark:border-slate-700 dark:hover:bg-slate-800"
           disabled={skin.status !== "pending"}
+          onClick={handleBuySkin}
         >
           Sotib olish
         </Button>
