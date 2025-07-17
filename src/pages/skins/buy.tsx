@@ -34,8 +34,8 @@ export default function BuySkinPage() {
   // Telegram post link if message_id exists
   const getTelegramLink = (message_id: number | null) => {
     if (!message_id) return "#";
-    const GROUP_ID = import.meta.env.VITE_TELEGRAM_GROUP_ID; // .env fayldan olinadi
-    return `https://t.me/c/${GROUP_ID.replace("-100", "")}/${message_id}`;
+    const CHANNEL_ID = import.meta.env.VITE_TELEGRAM_CHANNEL_ID; // .env fayldan olinadi
+    return `https://t.me/c/${CHANNEL_ID.replace("-100", "")}/${message_id}`;
   };
   const holat =
     skin.status === "sold"
