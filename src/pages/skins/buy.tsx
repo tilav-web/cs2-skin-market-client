@@ -35,6 +35,7 @@ export default function BuySkinPage() {
   const getTelegramLink = (message_id: number | null) => {
     if (!message_id) return "#";
     const CHANNEL_ID = import.meta.env.VITE_TELEGRAM_CHANNEL_ID; // .env fayldan olinadi
+    if (!CHANNEL_ID) return "#"; 
     return `https://t.me/c/${CHANNEL_ID.replace("-100", "")}/${message_id}`;
   };
   const holat =
