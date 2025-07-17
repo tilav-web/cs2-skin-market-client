@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import type { ISkin } from "@/interfaces/skin.interface";
 import { skinService } from "@/services/skin.service";
 import coinMain from "@/assets/coin-main.png";
+import { channelId } from "@/common/utils/shared";
 
 export default function BuySkinPage() {
   const { id } = useParams<{ id: string }>();
@@ -34,9 +35,8 @@ export default function BuySkinPage() {
   // Telegram post link if message_id exists
   const getTelegramLink = (message_id: number | null) => {
     if (!message_id) return "#";
-    const CHANNEL_ID = import.meta.env.VITE_TELEGRAM_CHANNEL_ID; // .env fayldan olinadi
-    if (!CHANNEL_ID) return "#"; 
-    return `https://t.me/c/${CHANNEL_ID.replace("-100", "")}/${message_id}`;
+    if (!channelId) return "#"; 
+    return `https://t.me/c/${channelId.replace("-100", "")}/${message_id}`;
   };
   const holat =
     skin.status === "sold"
