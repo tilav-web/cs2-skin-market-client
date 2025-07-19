@@ -46,8 +46,7 @@ const typeMap: Record<
     icon: ArrowUpCircle,
     color: "text-yellow-600",
   },
-  sale: { label: "Skin sotish", color: "" },
-  buy: { label: "Skin sotib olish", color: "" },
+  trade: { label: "Skin savdosi", icon: HandCoins, color: "text-blue-600" },
   bonus: { label: "Bonus", icon: Wallet, color: "text-pink-600" },
 };
 
@@ -64,7 +63,7 @@ export default function Profile() {
     const fetchTransactions = async () => {
       try {
         setLoadingTransactions(true);
-        const data = await transactionService.getUserTransactions();
+        const data = await transactionService.getUserTransactions(20);
         setTransactions(data);
       } catch (err) {
         console.error("Failed to fetch transactions:", err);
@@ -295,7 +294,7 @@ export default function Profile() {
                       <TypeIcon className="h-5 w-5" />
                     </div>
                   ) : null}
-                  {(tx.type === "sale" || tx.type === "buy") && tx.skin ? (
+                  {tx.type === "trade" && tx.skin ? (
                     <div className="flex items-center">
                       <img
                         src={tx.skin.icon_url}
@@ -322,14 +321,14 @@ export default function Profile() {
                           : "text-primary"
                       }`}
                     >
-                      {tx.type === "withdraw" || tx.type === "buy" ? "-" : "+"}
+                      {tx.type === "withdraw" || (tx.type === "trade" && tx.user._id === user?._id) ? "-" : "+"}
                       {tx.amount.toLocaleString()} tilav
                     </span>
                     <div
                       className={`text-xs ${
-                        tx.status === "completed"
+                        tx.state === TransactionState.Paid
                           ? "text-green-600"
-                          : tx.status === "pending"
+                          : tx.state === TransactionState.Pending
                           ? "text-yellow-600"
                           : "text-red-600"
                       }`}

@@ -65,6 +65,12 @@ requestInstance({
   } as AxiosRequestHeaders,
 });
 
+export const getTransactions = (limit?: number) => {
+  return privateInstance.get(endpoints.GET_MY_TRANSACTIONS, {
+    params: { limit },
+  });
+};
+
 export const updateTradeUrl = (tradeUrl: string) => {
   return privateInstance.put(endpoints.UPDATE_TRADE_URL, { tradeUrl });
 };

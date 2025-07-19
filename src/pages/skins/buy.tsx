@@ -56,9 +56,9 @@ export default function BuySkinPage() {
         fetchUser(); // Foydalanuvchi balansini yangilash
         // Skin ma'lumotlarini yangilash (status va egasi o'zgargan bo'lishi kerak)
         skinService.getSkinById(skin._id).then(setSkin);
-      } catch (err: any) {
-        const errorMessage = err.response?.data?.message || "Skinni sotib olishda xatolik yuz berdi.";
-        toast.error(errorMessage);
+      } catch (err) {
+        console.log(err);
+        toast.error("Skinni sotib olishda xatolik yuz berdi.");
       }
     }
   };
@@ -74,7 +74,7 @@ export default function BuySkinPage() {
   // Telegram post link if message_id exists
   const getTelegramLink = (message_id: number | null) => {
     if (!message_id) return "#";
-    if (!channelId) return "#"; 
+    if (!channelId) return "#";
     return `https://t.me/c/${channelId.replace("-100", "")}/${message_id}`;
   };
   const holat =

@@ -1,18 +1,26 @@
 import type { ISkin } from "./skin.interface";
+import type { IUser } from "./user.interface";
 
 export type TransactionType =
   | 'deposit'      // Pul tashlash
   | 'withdraw'     // Pul yechish
-  | 'sale'         // Skin sotish
-  | 'bonus'        // Bonus yoki reklama mablag'lari
-  | 'buy';         // Skin sotib olish
+  | 'trade'         // Skin savdosi (sotish/sotib olish)
+  | 'bonus';        // Bonus yoki reklama mablag'lari
+
+export enum TransactionState {
+  Paid = 2,
+  Pending = 1,
+  PendingCanceled = -1,
+  PaidCanceled = -2,
+}
 
 export interface ITransaction {
   _id: string;
-  user: string; // user id
+  user: IUser; // user id
+  receiver?: IUser; // receiver id
   amount: number;
   type: TransactionType;
-  status: 'pending' | 'completed' | 'failed';
+  state: TransactionState;
   skin?: ISkin | null;
   createdAt: string;
   updatedAt: string;
