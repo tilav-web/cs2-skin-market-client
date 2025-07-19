@@ -20,6 +20,7 @@ import {
   HandCoins,
 } from "lucide-react";
 import type { ITransaction } from "@/interfaces/transaction.interface";
+import { TransactionState } from "@/interfaces/transaction-state.enum";
 import coinMain from "@/assets/coin-main.png";
 import { useEffect, useState, type ElementType } from "react";
 import { useNavigate } from "react-router-dom";

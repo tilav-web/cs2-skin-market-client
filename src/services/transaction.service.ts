@@ -2,9 +2,11 @@ import { privateInstance } from "@/common/api/client-api";
 import { endpoints } from "@/common/api/endpoints";
 
 export const transactionService = {
-  getUserTransactions: async () => {
+  getUserTransactions: async (limit?: number) => {
     try {
-      const res = await privateInstance.get(endpoints.TRANSACTIONS + "/my");
+      const res = await privateInstance.get(endpoints.TRANSACTIONS + "/my", {
+        params: { limit },
+      });
       return res.data;
     } catch (error) {
       console.error("Error fetching user transactions:", error);
